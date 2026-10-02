@@ -973,3 +973,9 @@ a.hero-link {
     display: none !important;
   }
 }
+
+/* 2026-10-02: 본문(single) 페이지에서 하단 태그 목록 숨김 — 메인은 그대로 */
+.single .post-tags,
+.post-tags {
+  display: none !important;
+}
