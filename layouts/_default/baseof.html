@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "ko-kr" }}" dir="{{ .Language.LanguageDirection | default "ltr" }}">
+<head>
+  {{- partial "head.html" . -}}
+</head>
+<body class="{{ if .Site.Params.defaultTheme }}{{ .Site.Params.defaultTheme }}{{ end }}" id="top">
+  {{- partial "header.html" . -}}
+  <main class="main main-container">
+    <div class="content-area">
+      {{- block "main" . }}{{ end -}}
+    </div>
+    {{- partial "sidebar.html" . -}}
+  </main>
+  {{- partial "footer.html" . -}}
+</body>
+</html>

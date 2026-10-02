@@ -1,13 +1,28 @@
-<aside class="sidebar-article-list">
-  <div class="sidebar-header">
-    <h3>최근 글 목차</h3>
-  </div>
-  <ul class="sidebar-links">
-    {{ range first 20 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
-      <li class="{{ if eq $.Permalink .Permalink }}active{{ end }}">
-        <a href="{{ .Permalink }}">{{ .Title }}</a>
-        <span class="sidebar-date">{{ .Date.Format "01/02" }}</span>
+<aside class="blog-right-sidebar">
+  <!-- 1. 카테고리 분류 위젯 -->
+  <div class="sidebar-widget">
+    <h4 class="widget-title">분류 전체보기</h4>
+    <ul class="category-list">
+      {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
+      <li>
+        <a href="{{ "/categories/" | relLangURL }}{{ $name | urlize }}">
+          {{ $name }} <span class="count">({{ len $taxonomy }})</span>
+        </a>
       </li>
-    {{ end }}
-  </ul>
+      {{ end }}
+    </ul>
+  </div>
+
+  <!-- 2. 최근 글 위젯 -->
+  <div class="sidebar-widget">
+    <h4 class="widget-title">최근글</h4>
+    <ul class="recent-post-list">
+      {{ range first 5 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
+      <li>
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+        <span class="post-date">{{ .Date.Format "2006.01.02" }}</span>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
 </aside>
