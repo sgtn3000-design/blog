@@ -1,0 +1,12 @@
+baseURL = 'https://blog-nzn.pages.dev/'
+languageCode = 'ko-kr'
+title = '기록 보관소'
+theme = 'PaperMod'
+
+[params]
+  homeInfoParams:
+    Title: "기록 보관소"
+    Content: "생각과 작업들을 텍스트로 기록하는 공간입니다."
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+  ShowCodeCopyButtons = true
