@@ -1,5 +1,5 @@
 <aside class="blog-right-sidebar">
-  <!-- 1. 카테고리 분류 위젯 -->
+  <!-- 1. 분류 전체보기 -->
   <div class="sidebar-widget">
     <h4 class="widget-title">분류 전체보기</h4>
     <ul class="category-list">
@@ -13,14 +13,21 @@
     </ul>
   </div>
 
-  <!-- 2. 최근 글 위젯 -->
+  <!-- 2. 최근글 (작은 썸네일 이미지 포함) -->
   <div class="sidebar-widget">
     <h4 class="widget-title">최근글</h4>
     <ul class="recent-post-list">
       {{ range first 5 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
-      <li>
-        <a href="{{ .Permalink }}">{{ .Title }}</a>
-        <span class="post-date">{{ .Date.Format "2006.01.02" }}</span>
+      <li class="recent-item">
+        <div class="recent-text">
+          <a href="{{ .Permalink }}" class="recent-title">{{ .Title }}</a>
+          <span class="post-date">{{ .Date.Format "2006.01.02" }}</span>
+        </div>
+        {{ if .Params.cover.image }}
+        <a href="{{ .Permalink }}" class="recent-thumb">
+          <img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy" />
+        </a>
+        {{ end }}
       </li>
       {{ end }}
     </ul>
