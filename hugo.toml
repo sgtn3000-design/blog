@@ -1,13 +1,54 @@
 baseURL = 'https://blog-nzn.pages.dev/'
 languageCode = 'ko-kr'
-title = '기록 보관소'
+title = 'Archive & Log'
 theme = 'PaperMod'
 
-[params.homeInfoParams]
-Title = "기록 보관소"
-Content = "생각과 작업들을 텍스트로 기록하는 공간입니다."
+[pagination]
+  pagerSize = 8
 
 [params]
-ShowReadingTime = true
-ShowPostNavLinks = true
-ShowCodeCopyButtons = true
+  env = 'production'
+  title = 'Archive & Log'
+  description = '음악, 기술, 그리고 일상의 텍스트 아카이브'
+  author = 'HOYAN'
+  
+  # 디자인 & 레이아웃 디테일
+  defaultTheme = 'auto'              # 다크/라이트 모드 자동 전환
+  disableThemeToggle = false        # 테마 토글 버튼 활성화
+  ShowReadingTime = true             # 읽는 시간 표시
+  ShowShareButtons = true            # SNS 공유 버튼 표시
+  ShowPostNavLinks = true            # 이전글/다음글 네비게이션
+  ShowBreadCrumbs = true             # 상단 경로(Breadcrumbs) 표시
+  ShowCodeCopyButtons = true         # 코드 복사 버튼
+  ShowWordCount = true               # 글자 수 표시
+  ShowRssButtonInSectionTermList = true
+
+  # 메인 프로필/홈 화면 (깔끔한 인트로)
+  [params.homeInfoParams]
+    Title = "Archive & Thoughts"
+    Content = "작업과 기록, 생각들을 텍스트로 보관하는 개인 아카이브입니다."
+
+# 상단 메뉴바 구성 (카테고리, 태그, 검색 등)
+[[menu.main]]
+  identifier = "posts"
+  name = "글 목록"
+  url = "/posts/"
+  weight = 10
+
+[[menu.main]]
+  identifier = "categories"
+  name = "카테고리"
+  url = "/categories/"
+  weight = 20
+
+[[menu.main]]
+  identifier = "tags"
+  name = "태그"
+  url = "/tags/"
+  weight = 30
+
+[[menu.main]]
+  identifier = "archives"
+  name = "타임라인"
+  url = "/archives/"
+  weight = 40
