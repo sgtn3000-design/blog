@@ -925,3 +925,10 @@ a.hero-link {
   font-size: calc(1em - 3pt) !important;
   max-width: 100% !important;
 }
+
+/* 2026-10-02 수정4: 대제목 2pt 상향 (-3pt → -1pt) */
+.post-content h1,
+.single .post-title,
+.main .post-title {
+  font-size: calc(1em - 1pt) !important;
+}
