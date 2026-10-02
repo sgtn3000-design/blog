@@ -5,14 +5,5 @@
                 <img src="/images/logo.png" alt="셀다" class="site-logo-img" />
             </a>
         </div>
-        <ul class="custom-header-menu">
-            {{- range site.Menus.main }}
-            <li>
-                <a href="{{ .URL | absURL }}">
-                    <span>{{ .Name }}</span>
-                </a>
-            </li>
-            {{- end }}
-        </ul>
     </nav>
 </header>
