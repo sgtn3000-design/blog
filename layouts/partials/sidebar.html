@@ -1,0 +1,13 @@
+<aside class="sidebar-article-list">
+  <div class="sidebar-header">
+    <h3>최근 글 목차</h3>
+  </div>
+  <ul class="sidebar-links">
+    {{ range first 20 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
+      <li class="{{ if eq $.Permalink .Permalink }}active{{ end }}">
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+        <span class="sidebar-date">{{ .Date.Format "01/02" }}</span>
+      </li>
+    {{ end }}
+  </ul>
+</aside>
