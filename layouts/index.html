@@ -1,5 +1,4 @@
 {{- define "hero" }}
-{{/* 상단 히어로 배너 비활성화 (원할 시 주석 해제) */}}
 {{- end }}
 
 {{- define "main" }}
@@ -15,7 +14,9 @@
       {{- if .Params.cover.image }}
       <img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy" class="card-thumb" />
       {{- else }}
-      <div class="card-thumb-placeholder">No Image</div>
+      <div class="card-thumb-text-box">
+        <p class="thumb-inner-text">{{ .Summary | plainify | htmlUnescape }}</p>
+      </div>
       {{- end }}
     </a>
     <div class="card-body">

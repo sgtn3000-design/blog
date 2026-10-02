@@ -605,3 +605,38 @@ a.hero-link {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* 이미지가 없을 때 이미지 자리 박스를 채우는 텍스트 박스 */
+.card-thumb-text-box {
+  width: 100% !important;
+  height: 100% !important;
+  background: #f8f9fa !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 4px !important;
+  padding: 1.2rem !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+  transition: background 0.2s ease, border-color 0.2s ease !important;
+}
+
+.grid-card:hover .card-thumb-text-box {
+  background: #f1f3f5 !important;
+  border-color: #dee2e6 !important;
+}
+
+/* 박스 내부를 채우는 텍스트 */
+.thumb-inner-text {
+  font-size: 0.82rem !important;
+  line-height: 1.6 !important;
+  color: #495057 !important;
+  margin: 0 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 7 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  word-break: break-all !important;
+  font-family: inherit !important;
+}
