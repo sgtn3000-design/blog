@@ -14,19 +14,12 @@ theme = 'PaperMod'
   mainSections = ["posts"]
   
   defaultTheme = 'light'
-  disableThemeToggle = false
-  ShowReadingTime = true
-  ShowPostNavLinks = true
-  ShowCodeCopyButtons = true
+  disableThemeToggle = true          # 달/해 테마 변경 아이콘 제거
 
-  # 상단 로고 이미지 설정 (텍스트 대신 이미지 노출)
   [params.label]
     text = ""
     icon = "/images/logo.png"
     iconHeight = 36
-
-  # 오른쪽 상단의 '셀다' 제목 텍스트 숨김 (로고 이미지로 대체됨)
-  hideTitle = true
 
 [[menu.main]]
   identifier = "posts"

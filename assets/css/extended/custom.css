@@ -414,3 +414,33 @@ a.hero-link {
   text-align: left !important;
   display: block !important;
 }
+
+/* 상단 네비게이션 헤더 컨테이너: 본문(.main-container)과 동일한 1100px 좌측 라인 정렬 */
+.nav {
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+
+/* 로고 영역 좌측 정렬 */
+.logo {
+  display: flex !important;
+  align-items: center !important;
+  margin-right: auto !important;
+}
+
+/* 로고 이미지 크기 및 렌더링 유지 */
+.logo a img {
+  height: 38px !important;
+  width: auto !important;
+  display: block !important;
+}
+
+/* 이미지 옆에 남아있는 검정 텍스트 숨김 */
+.logo a span,
+#theme-toggle {
+  display: none !important;
+}
