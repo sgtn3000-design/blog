@@ -905,3 +905,14 @@ a.hero-link {
 .post-content ul ul, .post-content ol ol, .post-content ul ol, .post-content ol ul {
   padding-left: 1.2em !important;
 }
+
+/* 2026-10-02 수정2: 대제목(h1) 더 축소 */
+.post-content h1 {
+  font-size: calc(1em - 3pt) !important;
+}
+
+/* 표 앞뒤 여백: 소제목처럼 앞 2행 / 뒤 1행 */
+.post-content table {
+  margin-top: 2em !important;
+  margin-bottom: 1em !important;
+}
