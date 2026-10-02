@@ -579,3 +579,29 @@ a.hero-link {
   box-sizing: border-box !important;
   line-height: 1 !important;
 }
+
+/* 부모 컨테이너가 사이드바 높이를 제한하지 않도록 align-items 설정 */
+.main-container {
+  align-items: flex-start !important;
+  overflow: visible !important;
+}
+
+/* 우측 사이드바 스크롤 고정 */
+.blog-right-sidebar {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 20px !important;            /* 스크롤 시 화면 상단에서 20px 띄우고 고정 */
+  z-index: 10 !important;
+  align-self: flex-start !important;
+  max-height: calc(100vh - 40px) !important; /* 화면을 넘어갈 경우 사이드바 자체 스크롤 */
+  overflow-y: auto !important;
+}
+
+/* 사이드바 자체 스크롤바는 깔끔하게 숨김 처리 */
+.blog-right-sidebar::-webkit-scrollbar {
+  display: none;
+}
+.blog-right-sidebar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
