@@ -916,3 +916,12 @@ a.hero-link {
   margin-top: 2em !important;
   margin-bottom: 1em !important;
 }
+
+/* 2026-10-02 수정3: 대제목 크기 통일 (커버 이미지 유무 무관) */
+/* 히어로/커버가 있는 페이지의 콘텐츠 h1도 동일 크기로 고정 */
+.post-content h1,
+.single .post-title,
+.main .post-title {
+  font-size: calc(1em - 3pt) !important;
+  max-width: 100% !important;
+}
