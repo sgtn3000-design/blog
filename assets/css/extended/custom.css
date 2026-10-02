@@ -953,3 +953,13 @@ a.hero-link {
 .main .post-title {
   font-size: calc(1em + 3pt) !important;
 }
+
+/* 카드 전체 클릭 영역: 호버 효과 */
+.card-clickable {
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card-clickable:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
