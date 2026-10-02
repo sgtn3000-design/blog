@@ -745,3 +745,44 @@ a.hero-link {
     aspect-ratio: 8 / 2 !important;
   }
 }
+
+/* 모바일 전용 레이아웃 순서 재배치 (850px 이하) */
+@media screen and (max-width: 850px) {
+  /* 본문 컨테이너를 세로 정렬로 변경 */
+  .main-container {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* 사이드바를 위쪽으로 끌어올림 */
+  .blog-right-sidebar {
+    order: 1 !important;
+    width: 100% !important;
+    position: static !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* 본문 전체글 목록 영역을 사이드바 아래로 배치 */
+  .content-area {
+    order: 2 !important;
+    width: 100% !important;
+  }
+
+  /* 사이드바 내부 구성: 메뉴 -> 분류 전체보기 순서 유지 */
+  .sidebar-top-nav {
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  /* 3. 모바일에서 최근글 위젯 완전 숨김 */
+  .blog-right-sidebar .sidebar-widget:last-of-type {
+    display: none !important;
+  }
+
+  /* 모바일에서 '분류 전체보기' 하단 여백 최적화 */
+  .sidebar-widget.first-widget {
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1rem !important;
+  }
+}
