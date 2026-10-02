@@ -884,3 +884,24 @@ a.hero-link {
 .post-content p, .post-content li {
   font-size: calc(1em - 2pt) !important;
 }
+
+/* 2026-10-02 추가: 표 글씨도 본문 크기로 */
+.post-content table, .post-content th, .post-content td {
+  font-size: calc(1em - 2pt) !important;
+}
+
+/* 불릿 리스트가 본문 폭 안으로 들어가도록 */
+.post-content ul, .post-content ol {
+  padding-left: 1.2em !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.post-content li {
+  list-style-position: outside;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+/* 중첩 리스트 들여쓰기 축소 */
+.post-content ul ul, .post-content ol ol, .post-content ul ol, .post-content ol ul {
+  padding-left: 1.2em !important;
+}
