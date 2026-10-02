@@ -5,12 +5,18 @@
 </head>
 <body class="{{ if .Site.Params.defaultTheme }}{{ .Site.Params.defaultTheme }}{{ end }}" id="top">
   {{- partial "header.html" . -}}
+
+  {{- /* 상단 풀와이드 히어로 이미지 (사이드바 위 전체 영역) */ -}}
+  {{- block "hero" . }}{{ end -}}
+
+  {{- /* 사진 아래부터 시작되는 본문 + 우측 사이드바 2단 구조 */ -}}
   <main class="main main-container">
     <div class="content-area">
       {{- block "main" . }}{{ end -}}
     </div>
     {{- partial "sidebar.html" . -}}
   </main>
+
   {{- partial "footer.html" . -}}
 </body>
 </html>

@@ -1,5 +1,4 @@
-{{- define "main" }}
-
+{{- define "hero" }}
 {{- if .Params.cover.image }}
 <div class="hero-cover-container">
   <div class="hero-cover-bg" style="background-image: url('{{ .Params.cover.image | absURL }}');"></div>
@@ -14,14 +13,16 @@
     {{- end }}
     <h1 class="hero-title">{{ .Title }}</h1>
     <div class="hero-meta">
-      <span>by {{ .Params.author | default .Site.Params.author | default "Admin" }}</span>
+      <span>by {{ .Params.author | default .Site.Params.author | default "HOYAN" }}</span>
       <span>•</span>
       <span>{{ .Date.Format "2006. 01. 02." }}</span>
     </div>
   </div>
 </div>
 {{- end }}
+{{- end }}
 
+{{- define "main" }}
 <article class="post-single {{ if not .Params.cover.image }}no-cover{{ end }}">
   {{- if not .Params.cover.image }}
   <header class="post-header">
@@ -34,5 +35,4 @@
     {{- .Content }}
   </div>
 </article>
-
 {{- end }}
