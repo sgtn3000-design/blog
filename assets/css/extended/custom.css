@@ -364,3 +364,16 @@ a.hero-link {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* 상단 헤더 로고 이미지 스타일 */
+.logo a img {
+  height: 38px !important;
+  width: auto !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.logo a {
+  display: flex !important;
+  align-items: center !important;
+}

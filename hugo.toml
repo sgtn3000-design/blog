@@ -1,6 +1,6 @@
 baseURL = 'https://blog-nzn.pages.dev/'
 languageCode = 'ko-kr'
-title = 'Archive & Log'
+title = '셀다'
 theme = 'PaperMod'
 
 [pagination]
@@ -8,23 +8,22 @@ theme = 'PaperMod'
 
 [params]
   env = 'production'
-  title = 'Archive & Log'
-  description = '음악, 기술, 텍스트 아카이브'
+  title = '셀다'
+  description = '셀다 - self damagochi'
   author = 'HOYAN'
   mainSections = ["posts"]
   
-  defaultTheme = 'auto'
+  defaultTheme = 'light'
   disableThemeToggle = false
   ShowReadingTime = true
-  ShowShareButtons = true
   ShowPostNavLinks = true
-  ShowBreadCrumbs = true
   ShowCodeCopyButtons = true
-  ShowWordCount = true
 
-  [params.homeInfoParams]
-    Title = "Archive & Thoughts"
-    Content = "작업과 기록, 생각들을 보관하는 개인 아카이브입니다."
+  # 상단 로고 이미지 설정 (텍스트 대신 이미지 노출)
+  [params.label]
+    text = ""
+    icon = "/images/logo.png"
+    iconHeight = 36
 
 [[menu.main]]
   identifier = "posts"
