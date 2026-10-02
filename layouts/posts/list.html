@@ -11,7 +11,7 @@
       {{- if .Params.cover.image }}
       <img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy" class="card-thumb" />
       {{- else }}
-      <div class="card-thumb-placeholder">No Image</div>
+      <div class="card-thumb-placeholder" data-default="/images/category-default.webp"><img src="/images/category-default.webp" alt="기본 이미지" class="card-thumb" loading="lazy"></div>
       {{- end }}
     </a>
     <div class="card-body">
