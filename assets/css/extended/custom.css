@@ -444,3 +444,43 @@ a.hero-link {
 #theme-toggle {
   display: none !important;
 }
+
+/* 헤더 여백 및 전체 너비 초기화 */
+.header.custom-site-header {
+  width: 100% !important;
+  background: transparent !important;
+}
+
+/* 아래 본문 컨테이너(.main-container)와 완벽히 동일한 너비와 패딩으로 수직선 일치 */
+.nav.custom-nav-container {
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.custom-nav-container .logo {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.custom-nav-container .logo a {
+  display: inline-block !important;
+  line-height: 1 !important;
+}
+
+.site-logo-img {
+  height: 38px !important;
+  width: auto !important;
+  display: block !important;
+}
+
+/* 검정 텍스트 및 토글 원천 숨김 */
+#theme-toggle,
+.logo-switches {
+  display: none !important;
+}

@@ -1,0 +1,22 @@
+<header class="header custom-site-header">
+    <nav class="nav custom-nav-container">
+        <div class="logo">
+            <a href="{{ "" | absURL }}" accesskey="h" title="홈으로 이동">
+                <img src="/images/logo.png" alt="셀다" class="site-logo-img" />
+            </a>
+        </div>
+        <ul id="menu">
+            {{- range site.Menus.main }}
+            {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | absURL }}
+            {{- $page_url:=$ | absURL }}
+            {{- $is_search := eq (site.GetPage .KeyName).Layout `search` }}
+            <li>
+                <a href="{{ .URL | absURL }}" title="{{ .Title | default .Name }} {{- cond $is_search " (Alt + /)" "" }}"
+                {{- cond $is_search " accesskey=/" "" }}>
+                    <span>{{ .Name }}</span>
+                </a>
+            </li>
+            {{- end }}
+        </ul>
+    </nav>
+</header>
