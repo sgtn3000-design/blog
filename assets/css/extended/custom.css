@@ -946,3 +946,10 @@ a.hero-link {
 .main .post-title {
   font-size: calc(1em + 2pt) !important;
 }
+
+/* 2026-10-02 수정7: 대제목 +1pt (본문 기준 +3pt) */
+.post-content h1,
+.single .post-title,
+.main .post-title {
+  font-size: calc(1em + 3pt) !important;
+}
