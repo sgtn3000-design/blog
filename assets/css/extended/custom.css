@@ -963,3 +963,13 @@ a.hero-link {
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   transform: translateY(-2px);
 }
+
+/* 2026-10-02: 모바일에서 이미지 없는 글의 회색 'No Image' 박스 숨김 */
+@media screen and (max-width: 900px) {
+  .card-thumb-placeholder {
+    display: none !important;
+  }
+  .card-thumb-link:has(.card-thumb-placeholder) {
+    display: none !important;
+  }
+}
