@@ -738,3 +738,10 @@ a.hero-link {
     margin-bottom: 0.5rem !important;
   }
 }
+
+/* 모바일 화면 (550px 이하) 이미지 비율 8:2 (4:1) 재조정 */
+@media screen and (max-width: 550px) {
+  .grid-card:not(.card-without-image) .card-thumb-link {
+    aspect-ratio: 8 / 2 !important;
+  }
+}
