@@ -9,14 +9,12 @@
 <div class="post-grid-container">
   {{- $pages := first 6 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
   {{- range $pages }}
-  <article class="grid-card">
+  <article class="grid-card {{ if not .Params.cover.image }}card-without-image{{ end }}">
     <a href="{{ .Permalink }}" class="card-thumb-link">
       {{- if .Params.cover.image }}
       <img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy" class="card-thumb" />
       {{- else }}
-      <div class="card-thumb-text-box">
-        <p class="thumb-inner-text">{{ .Summary | plainify | htmlUnescape }}</p>
-      </div>
+      <div class="card-thumb-empty-box"></div>
       {{- end }}
     </a>
     <div class="card-body">

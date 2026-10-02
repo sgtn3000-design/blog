@@ -640,3 +640,49 @@ a.hero-link {
   word-break: break-all !important;
   font-family: inherit !important;
 }
+
+/* PC: 이미지가 없을 때 글씨 없는 심플한 빈 박스 */
+.card-thumb-empty-box {
+  width: 100% !important;
+  height: 100% !important;
+  background: #f4f5f7 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  transition: background 0.2s ease, border-color 0.2s ease !important;
+}
+
+.grid-card:hover .card-thumb-empty-box {
+  background: #ebedf0 !important;
+  border-color: #d1d5db !important;
+}
+
+/* 모바일 화면 (화면 너비 550px 이하) 반응형 분기 */
+@media screen and (max-width: 550px) {
+  /* 이미지가 없는 카드는 썸네일 빈 박스 영역 완전 숨김 */
+  .grid-card.card-without-image .card-thumb-link {
+    display: none !important;
+  }
+
+  /* 박스가 사라진 자리의 카드 여백 및 테두리 보정 */
+  .grid-card.card-without-image {
+    padding: 1rem 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  .grid-card.card-without-image .card-body {
+    padding: 0 !important;
+  }
+
+  /* 모바일에서 본문 요약문 4줄 노출 */
+  .grid-card.card-without-image .card-summary {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 4 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+    color: var(--secondary) !important;
+    margin-bottom: 0.6rem !important;
+  }
+}
