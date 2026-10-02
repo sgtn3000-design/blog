@@ -874,3 +874,13 @@ a.hero-link {
 .post-content > h1:first-child {
   margin-top: 0 !important;
 }
+
+/* 2026-10-02 수정: 소제목 1pt 증가, 본문을 기존 소제목 크기로 */
+.post-content h1, .post-content h2, .post-content h3 {
+  font-size: calc(1em - 1pt) !important;
+}
+
+/* 본문 문단을 기존 소제목 크기(기본-2pt)로 */
+.post-content p, .post-content li {
+  font-size: calc(1em - 2pt) !important;
+}
