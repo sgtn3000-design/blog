@@ -979,3 +979,18 @@ a.hero-link {
 .post-tags {
   display: none !important;
 }
+
+/* 2026-10-02: 문장 사이 여백 미세 확대 (본문 문단 간 0.5pt 느낌) */
+.post-content p {
+  letter-spacing: 0.02em;
+  line-height: 1.75 !important;
+}
+/* 목록 항목 간 간격도 살짝 */
+.post-content li {
+  margin-bottom: 0.35em;
+}
+/* 표 셀 간격 살짝 */
+.post-content td, .post-content th {
+  padding-top: 0.5em !important;
+  padding-bottom: 0.5em !important;
+}
