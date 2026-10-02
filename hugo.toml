@@ -25,6 +25,9 @@ theme = 'PaperMod'
     icon = "/images/logo.png"
     iconHeight = 36
 
+  # 오른쪽 상단의 '셀다' 제목 텍스트 숨김 (로고 이미지로 대체됨)
+  hideTitle = true
+
 [[menu.main]]
   identifier = "posts"
   name = "전체 글"

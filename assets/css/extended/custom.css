@@ -377,3 +377,40 @@ a.hero-link {
   display: flex !important;
   align-items: center !important;
 }
+
+/* 로고(썰다)와 '전체 글' 사이 간격 확대 + 전체 글 왼쪽 정렬 */
+.home-intro-gap,
+.main > .page-header,
+.main > section:first-of-type {
+  margin-top: 1rem !important;
+}
+
+/* 전체 글 제목(페이지 헤더) 왼쪽 정렬 */
+.main .post-title, .main h1.page-title {
+  text-align: left !important;
+  margin-left: 0 !important;
+}
+
+/* 로고 아래 여백 추가 */
+.nav {
+  margin-bottom: 1.6rem !important;
+}
+
+/* '전체 글 7' 헤딩 왼쪽 정렬 */
+.main .first-entry .post-header,
+.main .post-header h1 {
+  text-align: left !important;
+}
+
+/* '전체 글 N' 리스트 타이틀: 로고와 간격 + 왼쪽 정렬 */
+.list-header {
+  margin-top: 2rem !important;
+  margin-bottom: 1.2rem !important;
+  text-align: left !important;
+  padding-left: 0 !important;
+}
+
+.list-title {
+  text-align: left !important;
+  display: block !important;
+}
