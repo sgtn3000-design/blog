@@ -862,3 +862,15 @@ a.hero-link {
   border-color: #3b82f6;
   background: rgba(59, 130, 246, 0.05);
 }
+
+/* 소제목/대제목 서식: 2pt 축소 + 볼드 + 앞 2행 뒤 1행 여백 (2026-10-02 확정) */
+.post-content h1, .post-content h2, .post-content h3 {
+  font-size: calc(1em - 2pt) !important;
+  font-weight: 700 !important;
+  margin-top: 2em !important;
+  margin-bottom: 1em !important;
+}
+/* 글 첫 제목(h1)은 위 여백 과하지 않게 */
+.post-content > h1:first-child {
+  margin-top: 0 !important;
+}
