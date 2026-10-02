@@ -1,49 +1,32 @@
 {{- define "hero" }}
-{{/* 가장 최근 글 1개 추출 */}}
-{{ $latest := index (where .Site.RegularPages "Type" "in" site.Params.mainSections) 0 }}
-{{ if and $latest $latest.Params.cover.image }}
-<div class="hero-cover-container">
-  <div class="hero-cover-bg" style="background-image: url('{{ $latest.Params.cover.image | absURL }}');"></div>
-  <div class="hero-cover-overlay"></div>
-  <a href="{{ $latest.Permalink }}" class="hero-cover-content hero-link">
-    {{- if $latest.Params.categories }}
-    <div class="hero-category">
-      {{- range $latest.Params.categories }}
-      <span>{{ . }}</span>
-      {{- end }}
-    </div>
-    {{- end }}
-    <h1 class="hero-title">{{ $latest.Title }}</h1>
-    <div class="hero-meta">
-      <span>by {{ $latest.Params.author | default .Site.Params.author | default "HOYAN" }}</span>
-      <span>•</span>
-      <span>{{ $latest.Date.Format "2006. 01. 02." }}</span>
-    </div>
-  </a>
-</div>
-{{ end }}
+{{/* 상단 히어로 배너 비활성화 (원할 시 주석 해제) */}}
 {{- end }}
 
 {{- define "main" }}
-<div class="home-post-list">
-  {{- $pages := where .Site.RegularPages "Type" "in" site.Params.mainSections }}
+<div class="list-header">
+  <h2 class="list-title">전체 글 <span class="list-count">{{ len (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}</span></h2>
+</div>
+
+<div class="post-grid-container">
+  {{- $pages := first 6 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
   {{- range $pages }}
-  <article class="post-entry">
-    {{- if .Params.cover.image }}
-    <div class="entry-cover">
-      <a href="{{ .Permalink }}"><img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy"></a>
+  <article class="grid-card">
+    <a href="{{ .Permalink }}" class="card-thumb-link">
+      {{- if .Params.cover.image }}
+      <img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy" class="card-thumb" />
+      {{- else }}
+      <div class="card-thumb-placeholder">No Image</div>
+      {{- end }}
+    </a>
+    <div class="card-body">
+      <h3 class="card-title">
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </h3>
+      <p class="card-summary">{{ .Summary | plainify | htmlUnescape }}</p>
+      <div class="card-meta">
+        <span class="card-date">{{ .Date.Format "2006. 1. 2." }}</span>
+      </div>
     </div>
-    {{- end }}
-    <div class="entry-header">
-      <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
-    </div>
-    <div class="entry-content">
-      <p>{{ .Summary | plainify | htmlUnescape }}...</p>
-    </div>
-    <footer class="entry-footer">
-      <span>{{ .Date.Format "2006-01-02" }}</span>
-      {{- if .Params.categories }} • <span>{{ delimit .Params.categories ", " }}</span>{{ end }}
-    </footer>
   </article>
   {{- end }}
 </div>
