@@ -811,3 +811,54 @@ a.hero-link {
     margin-bottom: 1rem !important;
   }
 }
+
+/* 모바일: '소식'과 '전체 글' 사이 간격 극소화 */
+@media screen and (max-width: 850px) {
+  .blog-right-sidebar {
+    margin-bottom: 0 !important;
+  }
+  .sidebar-widget.first-widget {
+    margin-bottom: 0 !important;
+    padding-bottom: 0.2rem !important;
+    border-bottom: none !important; /* 중복 경계선 제거 */
+  }
+  .category-list li:last-child {
+    padding-bottom: 0 !important;
+  }
+  .list-header {
+    margin-top: 0.2rem !important;
+    margin-bottom: 0.8rem !important;
+    height: auto !important;
+    padding-bottom: 0.3rem !important;
+  }
+}
+
+/* 본문 내 수정하기 버튼 스타일 */
+.post-edit-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1.5rem 0 1rem 0;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.edit-post-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--secondary);
+  background: var(--entry);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+}
+
+.edit-post-btn:hover {
+  color: #3b82f6;
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+}
