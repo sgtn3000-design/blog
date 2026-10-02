@@ -484,3 +484,32 @@ a.hero-link {
 .logo-switches {
   display: none !important;
 }
+
+/* 상단 우측 메뉴 가로 일렬 정렬 및 스타일 */
+.custom-header-menu {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 1.25rem !important;
+}
+
+.custom-header-menu li {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.custom-header-menu li a {
+  font-size: 0.92rem !important;
+  color: var(--content) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: color 0.15s ease !important;
+}
+
+.custom-header-menu li a:hover {
+  color: #3b82f6 !important;
+}
