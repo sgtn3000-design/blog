@@ -9,12 +9,12 @@
   {{- /* 상단 풀와이드 히어로 이미지 (사이드바 위 전체 영역) */ -}}
   {{- block "hero" . }}{{ end -}}
 
-  {{- /* 사진 아래부터 시작되는 본문 + 우측 사이드바 2단 구조 */ -}}
-  <main class="main main-container">
+  {{- /* 본문+사이드바: 메인(홈) 화면에만 사이드바 노출, 본문(single) 페이지에서는 숨김 */ -}}
+  <main class="main main-container{{ if .IsPage }} is-single-post{{ end }}">
     <div class="content-area">
       {{- block "main" . }}{{ end -}}
     </div>
-    {{- partial "sidebar.html" . -}}
+    {{- if not .IsPage }}{{- partial "sidebar.html" . -}}{{ end }}
   </main>
 
   {{- partial "footer.html" . -}}
