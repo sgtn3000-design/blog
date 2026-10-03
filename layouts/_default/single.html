@@ -43,17 +43,16 @@
     </header>
     {{- end }}
 
-    {{/* 1. 본문 내용 출력 */}}
     <div class="post-content">
       {{- .Content }}
     </div>
 
-    {{/* 2. 글 맨 밑 하단으로 이동한 수정하기 버튼 */}}
+    {{/* 관리자 모드에서만 드러나는 수정하기 버튼 */}}
     {{- if .File }}
-    <div class="post-edit-bar">
+    <div class="post-edit-bar admin-only-edit" style="display: none;">
       <a href="https://github.com/sgtn3000-design/blog/edit/main/content/{{ .File.Path }}" target="_blank" rel="noopener noreferrer" class="edit-post-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-        <span>수정하기</span>
+        <span>관리자 수정하기</span>
       </a>
     </div>
     {{- end }}
