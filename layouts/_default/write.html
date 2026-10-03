@@ -58,7 +58,9 @@
   const postCover = document.getElementById("post-cover"), postContent = document.getElementById("post-content");
 
   const urlParams = new URLSearchParams(window.location.search);
-  const editFilePath = urlParams.get("path");
+  let rawPath = urlParams.get("path") || "";
+if (rawPath.startsWith("/")) rawPath = rawPath.slice(1);
+const editFilePath = rawPath ? (rawPath.startsWith("content/") ? rawPath : "content/" + rawPath) : "";
   let existingDateStr = null;
 
   function getToken() { return localStorage.getItem("blog_gh_token") || ""; }
@@ -87,7 +89,7 @@
         if (end !== -1) text = text.substring(end + 3).trimStart(); else break;
       }
       postContent.value = text.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
-    } catch(e) { statusMsg.innerText = e.message; }
+    } catch(e) { alert("글 불러오기 실패: " + e.message); statusMsg.innerText = e.message; }
   }
   if (editFilePath) loadExistingPost();
 
