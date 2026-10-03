@@ -2,8 +2,14 @@
 {{- end }}
 
 {{- define "main" }}
-<div class="list-header">
-  <h2 class="list-title">전체 글 <span class="list-count">{{ len (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}</span></h2>
+<div class="list-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+  <h2 class="list-title" style="margin-bottom: 0;">전체 글 <span class="list-count">{{ len (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}</span></h2>
+  
+  {{/* 관리자 모드 활성화 시에만 드러나는 새 글 작성 버튼 */}}
+  <a href="{{ "/write" | absURL }}" class="admin-new-post-btn" style="display: none;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <span>관리자 새 글 쓰기</span>
+  </a>
 </div>
 
 <div class="post-grid-container">
