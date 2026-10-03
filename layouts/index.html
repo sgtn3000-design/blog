@@ -27,7 +27,9 @@
       <h3 class="card-title">
         <a href="{{ .Permalink }}">{{ .Title }}</a>
       </h3>
-      <p class="card-summary">{{ .Summary | plainify | htmlUnescape }}</p>
+      <p class="card-summary">
+        <a href="{{ .Permalink }}" class="card-summary-link">{{ .Summary | plainify | htmlUnescape }}</a>
+      </p>
       <div class="card-meta">
         <span class="card-date">{{ .Date.Format "2006. 1. 2." }}</span>
       </div>

@@ -1162,3 +1162,15 @@ body:has(.hero-cover-container) .post-content > h1:first-child {
 body:has(.hero-cover-container) .post-edit-bar {
   margin-top: 0.5rem !important;
 }
+
+/* 요약글 링크 기본 텍스트 스타일 유지 */
+.card-summary-link {
+  color: inherit !important;
+  text-decoration: none !important;
+  display: block !important;
+}
+
+.card-summary-link:hover {
+  text-decoration: none !important;
+  color: inherit !important;
+}

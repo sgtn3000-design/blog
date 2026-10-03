@@ -1,5 +1,4 @@
 {{- define "hero" }}
-{{/* 카테고리/태그/목록 페이지에서는 상단 히어로 배너를 렌더링하지 않음 */}}
 {{- end }}
 
 {{- define "main" }}
@@ -27,7 +26,9 @@
       <h3 class="card-title">
         <a href="{{ .Permalink }}">{{ .Title }}</a>
       </h3>
-      <p class="card-summary">{{ .Summary | plainify | htmlUnescape }}</p>
+      <p class="card-summary">
+        <a href="{{ .Permalink }}" class="card-summary-link">{{ .Summary | plainify | htmlUnescape }}</a>
+      </p>
       <div class="card-meta">
         <span class="card-date">{{ .Date.Format "2006. 1. 2." }}</span>
       </div>
