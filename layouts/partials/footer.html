@@ -1,6 +1,6 @@
 <footer class="footer">
     <span>&copy; {{ now.Year }} <a href="{{ "" | absURL }}">{{ site.Title }}</a></span>
-    <span id="secret-admin-trigger" style="cursor: pointer; opacity: 0.12; font-size: 11px; margin-left: 6px; user-select: none;" title="Admin">π</span>
+    <span id="secret-admin-trigger" style="cursor: pointer; opacity: 0.2; font-size: 13px; margin-left: 8px; padding: 4px 6px; user-select: none;" title="Admin">π</span>
 </footer>
 
 <script>
@@ -8,120 +8,110 @@
   const REPO = 'sgtn3000-design/blog';
   const BRANCH = 'main';
 
-  function applyAdminMode(isActive) {
+  function applyAdmin(active) {
     const trigger = document.getElementById('secret-admin-trigger');
-    if (isActive) {
+    if (active) {
       document.body.classList.add('is-admin');
-      if (trigger) { trigger.style.opacity = '1'; trigger.style.color = '#3b82f6'; trigger.style.fontWeight = 'bold'; }
+      if (trigger) {
+        trigger.style.opacity = '1';
+        trigger.style.color = '#3b82f6';
+        trigger.style.fontWeight = 'bold';
+      }
     } else {
       document.body.classList.remove('is-admin');
-      if (trigger) { trigger.style.opacity = '0.12'; trigger.style.color = 'inherit'; trigger.style.fontWeight = 'normal'; }
+      if (trigger) {
+        trigger.style.opacity = '0.2';
+        trigger.style.color = 'inherit';
+        trigger.style.fontWeight = 'normal';
+      }
     }
   }
 
-  const isAdmin = localStorage.getItem('blog_admin_active') === 'true';
-  applyAdminMode(isAdmin);
+  // 초기 상태 반영
+  applyAdmin(localStorage.getItem('blog_admin_active') === 'true');
 
+  // 파이 기호 클릭 이벤트
   const trigger = document.getElementById('secret-admin-trigger');
   if (trigger) {
-    trigger.addEventListener('click', function(e) {
+    trigger.onclick = function(e) {
       e.preventDefault();
       const current = localStorage.getItem('blog_admin_active') === 'true';
       if (current) {
         if (confirm("관리자 모드를 끄시겠습니까?")) {
           localStorage.removeItem('blog_admin_active');
-          applyAdminMode(false);
+          applyAdmin(false);
           alert("관리자 모드가 해제되었습니다.");
         }
       } else {
-        const pin = prompt("관리자 PIN 번호를 입력하세요:");
+        const pin = prompt("관리자 PIN 번호를 입력하세요 (7777):");
         if (pin === "7777") {
           localStorage.setItem('blog_admin_active', 'true');
-          applyAdminMode(true);
-          alert("관리자 모드 활성화 완료!");
+          applyAdmin(true);
+          alert("관리자 모드가 활성화되었습니다!");
         } else if (pin !== null) {
           alert("비밀번호가 올바르지 않습니다.");
         }
       }
-    });
+    };
   }
 
-  // 삭제 버튼 로직
+  // 본문 하단 글 삭제 버튼 이벤트
   const delBtn = document.getElementById('admin-delete-post-btn');
   if (delBtn) {
-    delBtn.addEventListener('click', async function(e) {
+    delBtn.onclick = async function(e) {
       e.preventDefault();
       const token = localStorage.getItem('blog_gh_token');
       if (!token) {
-        alert("GitHub 토큰이 등록되어 있지 않습니다. 관리자 새 글 쓰기 화면에서 토큰을 먼저 저장해 주세요.");
+        alert("GitHub 토큰이 필요합니다. 상단 관리자 글쓰기에서 먼저 저장해 주세요.");
         return;
       }
-
       const filePath = delBtn.getAttribute('data-filepath');
       const coverImg = delBtn.getAttribute('data-coverimage');
-
-      if (!confirm("⚠️ 정말로 이 글을 완전히 삭제하시겠습니까?\n(글 마크다운 및 연결된 사진이 모두 영구 삭제됩니다)")) {
-        return;
-      }
+      if (!confirm("정말로 이 글을 삭제하시겠습니까?")) return;
 
       delBtn.disabled = true;
-      delBtn.innerText = "삭제 중...";
+      delBtn.innerText = "삭제 진행 중...";
 
       try {
-        // 1. 포스트 마크다운 파일 SHA 조회 후 DELETE
-        const fileRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${filePath}?ref=${BRANCH}&t=${Date.now()}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+        const fileRes = await fetch("https://api.github.com/repos/" + REPO + "/contents/" + filePath + "?ref=" + BRANCH + "&t=" + Date.now(), {
+          headers: { 'Authorization': 'Bearer ' + token }
         });
-        if (!fileRes.ok) throw new Error("글 정보를 가져오지 못했습니다.");
+        if (!fileRes.ok) throw new Error("글 정보를 읽지 못했습니다.");
         const fileData = await fileRes.json();
 
-        const delFileRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${filePath}`, {
+        const delRes = await fetch("https://api.github.com/repos/" + REPO + "/contents/" + filePath, {
           method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: `delete: remove post ${filePath}`,
-            sha: fileData.sha,
-            branch: BRANCH
-          })
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: "delete: post " + filePath, sha: fileData.sha, branch: BRANCH })
         });
+        if (!delRes.ok) throw new Error("포스트 삭제 실패");
 
-        if (!delFileRes.ok) throw new Error("포스트 파일 삭제에 실패했습니다.");
-
-        // 2. 연결된 대표 이미지도 GitHub에서 삭제 (용량 확보, 기본 이미지는 제외)
+        // 연결된 이미지 정리
         if (coverImg && !coverImg.includes("category-default")) {
           const cleanImg = "static/" + (coverImg.startsWith("/") ? coverImg.slice(1) : coverImg);
           try {
-            const imgRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${cleanImg}?ref=${BRANCH}`, {
-              headers: { 'Authorization': `Bearer ${token}` }
+            const imgRes = await fetch("https://api.github.com/repos/" + REPO + "/contents/" + cleanImg + "?ref=" + BRANCH, {
+              headers: { 'Authorization': 'Bearer ' + token }
             });
             if (imgRes.ok) {
               const imgData = await imgRes.json();
-              await fetch(`https://api.github.com/repos/${REPO}/contents/${cleanImg}`, {
+              await fetch("https://api.github.com/repos/" + REPO + "/contents/" + cleanImg, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  message: `cleanup: remove post image ${cleanImg}`,
-                  sha: imgData.sha,
-                  branch: BRANCH
-                })
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: "cleanup: " + cleanImg, sha: imgData.sha, branch: BRANCH })
               });
             }
-          } catch(err) {
-            console.warn("이미지 삭제 건너뜀:", err);
-          }
+          } catch(err) {}
         }
 
-        alert("글이 성공적으로 삭제되었습니다! 메인 화면으로 이동합니다.");
-         absURL }}";| absURL }}";
+        alert("삭제가 완료되었습니다!");
+        window.location.href = "{{ "" | absURL }}?v=" + Date.now();
       } catch(err) {
-        alert("삭제 중 오류가 발생했습니다: " + err.message);
+        alert("삭제 오류: " + err.message);
         delBtn.disabled = false;
         delBtn.innerText = "삭제하기";
       }
-    });
+    };
   }
 })();
 </script>
