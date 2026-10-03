@@ -43,7 +43,7 @@
           alert("관리자 모드가 해제되었습니다.");
         }
       } else {
-        const pin = prompt("관리자 PIN 번호를 입력하세요 (7777):");
+        const pin = prompt("관리자 PIN 번호를 입력하세요:");
         if (pin === "7777") {
           localStorage.setItem('blog_admin_active', 'true');
           applyAdmin(true);
