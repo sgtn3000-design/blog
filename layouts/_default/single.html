@@ -1,66 +1,59 @@
-{{- $coverImg := "" }}
-{{- if .Params.cover.image }}
-  {{- $coverImg = .Params.cover.image }}
-{{- else if .Params.image }}
-  {{- $coverImg = .Params.image }}
-{{- end }}
-
 {{- define "hero" }}
-{{- $coverImg := "" }}
-{{- if .Params.cover.image }}
-  {{- $coverImg = .Params.cover.image }}
-{{- else if .Params.image }}
-  {{- $coverImg = .Params.image }}
-{{- end }}
-{{- if $coverImg }}
-<div class="hero-cover-container">
-  <div class="hero-cover-bg" style="background-image: url('{{ $coverImg | absURL }}');"></div>
-  <div class="hero-cover-overlay"></div>
-  <div class="hero-cover-content">
-    {{- if .Params.categories }}
-    <div class="hero-category">
-      {{- range .Params.categories }}
-      <span>{{ . }}</span>
+  {{- $coverImg := "" }}
+  {{- if .Params.cover.image }}
+    {{- $coverImg = .Params.cover.image }}
+  {{- else if .Params.image }}
+    {{- $coverImg = .Params.image }}
+  {{- end }}
+  {{- if $coverImg }}
+  <div class="hero-cover-container">
+    <div class="hero-cover-bg" style="background-image: url('{{ $coverImg | absURL }}');"></div>
+    <div class="hero-cover-overlay"></div>
+    <div class="hero-cover-content">
+      {{- if .Params.categories }}
+      <div class="hero-category">
+        {{- range .Params.categories }}
+        <span>{{ . }}</span>
+        {{- end }}
+      </div>
       {{- end }}
-    </div>
-    {{- end }}
-    <h1 class="hero-title">{{ .Title }}</h1>
-    <div class="hero-meta">
-      <span>by {{ .Params.author | default .Site.Params.author | default "HOYAN" }}</span>
-      <span>•</span>
-      <span>{{ .Date.Format "2006. 01. 02." }}</span>
+      <h1 class="hero-title">{{ .Title }}</h1>
+      <div class="hero-meta">
+        <span>by {{ .Params.author | default .Site.Params.author | default "HOYAN" }}</span>
+        <span>•</span>
+        <span>{{ .Date.Format "2006. 01. 02." }}</span>
+      </div>
     </div>
   </div>
-</div>
-{{- end }}
+  {{- end }}
 {{- end }}
 
 {{- define "main" }}
-{{- $coverImg := "" }}
-{{- if .Params.cover.image }}
-  {{- $coverImg = .Params.cover.image }}
-{{- else if .Params.image }}
-  {{- $coverImg = .Params.image }}
-{{- end }}
-<article class="post-single {{ if not $coverImg }}no-cover{{ end }}">
-  {{- if not $coverImg }}
-  <header class="post-header">
-    <h1 class="post-title">{{ .Title }}</h1>
-    <div class="post-meta">{{ .Date.Format "2006-01-02" }}</div>
-  </header>
+  {{- $coverImg := "" }}
+  {{- if .Params.cover.image }}
+    {{- $coverImg = .Params.cover.image }}
+  {{- else if .Params.image }}
+    {{- $coverImg = .Params.image }}
   {{- end }}
+  <article class="post-single {{ if not $coverImg }}no-cover{{ end }}">
+    {{- if not $coverImg }}
+    <header class="post-header">
+      <h1 class="post-title">{{ .Title }}</h1>
+      <div class="post-meta">{{ .Date.Format "2006-01-02" }}</div>
+    </header>
+    {{- end }}
 
-  {{- if .File }}
-  <div class="post-edit-bar">
-    <a href="https://github.com/sgtn3000-design/blog/edit/main/content/{{ .File.Path }}" target="_blank" rel="noopener noreferrer" class="edit-post-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-      <span>수정하기</span>
-    </a>
-  </div>
-  {{- end }}
+    {{- if .File }}
+    <div class="post-edit-bar">
+      <a href="https://github.com/sgtn3000-design/blog/edit/main/content/{{ .File.Path }}" target="_blank" rel="noopener noreferrer" class="edit-post-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        <span>수정하기</span>
+      </a>
+    </div>
+    {{- end }}
 
-  <div class="post-content">
-    {{- .Content }}
-  </div>
-</article>
+    <div class="post-content">
+      {{- .Content }}
+    </div>
+  </article>
 {{- end }}
