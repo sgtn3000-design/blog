@@ -5,6 +5,7 @@
     <h2 id="editor-page-title" style="margin: 0; font-size: 1.5rem;">✍️ 블로그 글 & WebP 사진 저작도구</h2>
     <a href="{{ "" | absURL }}" style="font-size: 0.9rem; color: #666; text-decoration: none;">← 홈으로 돌아가기</a>
   </div>
+
   <div id="token-box" style="display: none; background: #fff3cd; border: 1px solid #ffeeba; padding: 12px 16px; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.88rem; color: #856404;">
     <strong>최초 1회 설정:</strong> GitHub Personal Access Token이 필요합니다.
     <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -12,23 +13,34 @@
       <button id="save-token-btn" style="padding: 6px 14px; background: #3b82f6; color: #fff; border: none; border-radius: 4px; cursor: pointer;">저장</button>
     </div>
   </div>
+
   <div class="editor-form" style="display: flex; flex-direction: column; gap: 14px;">
-    <div><input type="text" id="post-title" placeholder="글 제목을 입력하세요" style="width: 100%; font-size: 1.3rem; font-weight: bold; padding: 12px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" /></div>
+    <div>
+      <input type="text" id="post-title" placeholder="글 제목을 입력하세요" style="width: 100%; font-size: 1.3rem; font-weight: bold; padding: 12px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
+    </div>
+
     <div style="display: flex; gap: 12px;">
       <input type="text" id="post-category" placeholder="카테고리 (예: 시황, 단상)" style="flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
-      <input type="text" id="post-cover" placeholder="대표 커버 이미지 경로" style="flex: 2; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
+      <input type="text" id="post-cover" placeholder="상단 메인 대표 이미지 경로" style="flex: 2; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
     </div>
+
     <div id="drop-zone" style="border: 2px dashed #3b82f6; border-radius: 8px; padding: 1.2rem; text-align: center; background: rgba(59, 130, 246, 0.03); cursor: pointer;">
-      <p style="margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 600; color: #2563eb;">📸 사진 추가 / 교체 (클릭하거나 이미지를 여기로 드래그)</p>
-      <p style="margin: 0; font-size: 0.8rem; color: #666;">기존 사진이 있으면 자동으로 덮어쓰고 본문과 커버 이미지 전체를 새 사진으로 교체합니다.</p>
+      <p style="margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 600; color: #2563eb;">📸 사진 추가 (클릭하거나 이미지를 여기로 드래그)</p>
+      <p style="margin: 0; font-size: 0.8rem; color: #666;">고화질 사진을 넣으면 가로 1200px 리사이즈 및 <strong>WebP 초경량 압축</strong> 후 자동 업로드됩니다.</p>
       <input type="file" id="image-file-input" accept="image/*" style="display: none;" />
+      
       <div style="margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #444;">
-        <input type="checkbox" id="overwrite-existing" checked />
-        <label for="overwrite-existing" style="cursor: pointer;"><strong>기존 본문/커버 사진을 이 사진으로 완전 교체</strong></label>
+        <input type="checkbox" id="cover-only-check" checked />
+        <label for="cover-only-check" style="cursor: pointer;"><strong>상단 메인 대표 사진으로만 사용 (본문 안에는 넣지 않음)</strong></label>
       </div>
+
       <div id="upload-status" style="margin-top: 8px; font-size: 0.85rem; font-weight: 500;"></div>
     </div>
-    <div><textarea id="post-content" rows="18" placeholder="본문 내용" style="width: 100%; font-size: 1rem; line-height: 1.6; padding: 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-family: inherit; resize: vertical; background: var(--theme); color: var(--content);"></textarea></div>
+
+    <div>
+      <textarea id="post-content" rows="18" placeholder="본문 내용" style="width: 100%; font-size: 1rem; line-height: 1.6; padding: 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-family: inherit; resize: vertical; background: var(--theme); color: var(--content);"></textarea>
+    </div>
+
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
       <span id="status-msg" style="font-size: 0.9rem; font-weight: 500;"></span>
       <div style="display: flex; gap: 10px;">
@@ -38,6 +50,7 @@
     </div>
   </div>
 </div>
+
 <script>
 (function() {
   const REPO = "sgtn3000-design/blog";
@@ -56,13 +69,12 @@
   const postCategory = document.getElementById("post-category");
   const postCover = document.getElementById("post-cover");
   const postContent = document.getElementById("post-content");
-  const overwriteCheck = document.getElementById("overwrite-existing");
+  const coverOnlyCheck = document.getElementById("cover-only-check");
 
   const urlParams = new URLSearchParams(window.location.search);
   const editFilePath = urlParams.get("path");
   let existingSha = null;
   let existingDateStr = null;
-  let oldImagePath = "";
 
   function getToken() { return localStorage.getItem("blog_gh_token") || ""; }
   function checkToken() { tokenBox.style.display = getToken() ? "none" : "block"; }
@@ -96,10 +108,7 @@
         const t = fm.match(/title:\s*["']?(.*?)["']?$/m); if (t) postTitle.value = t[1];
         const c = fm.match(/categories:\s*\n\s*-\s*["']?(.*?)["']?$/m); if (c) postCategory.value = c[1];
         const img = fm.match(/image:\s*["']?(.*?)["']?$/m); 
-        if (img) { 
-          postCover.value = img[1]; 
-          oldImagePath = img[1];
-        }
+        if (img) postCover.value = img[1];
         const d = fm.match(/date:\s*(.*?)$/m); if (d) existingDateStr = d[1].trim();
         postContent.value = body.trimStart();
       } else { postContent.value = rawText; }
@@ -108,7 +117,7 @@
   }
   if (editFilePath) loadExistingPost();
 
-  dropZone.addEventListener("click", (e) => { if (e.target !== overwriteCheck && e.target.tagName !== "LABEL") fileInput.click(); });
+  dropZone.addEventListener("click", (e) => { if (e.target !== coverOnlyCheck && e.target.tagName !== "LABEL") fileInput.click(); });
   dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.1)"; });
   dropZone.addEventListener("dragleave", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.03)"; });
   dropZone.addEventListener("drop", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.03)"; if (e.dataTransfer.files.length) processAndUploadImage(e.dataTransfer.files[0]); });
@@ -148,27 +157,16 @@
         body: JSON.stringify({ message: `upload: ${name}`, content: comp.base64, branch: BRANCH })
       });
       if (!res.ok) throw new Error("업로드 실패");
-      uploadStatus.innerText = `✅ 새 사진 업로드 완료 (${comp.size}KB WebP)`; uploadStatus.style.color = "#10b981";
+      uploadStatus.innerText = `✅ 업로드 완료 (${comp.size}KB WebP)`; uploadStatus.style.color = "#10b981";
       const newPath = `/images/${name}`;
 
-      if (overwriteCheck.checked) {
-        // 1. 대표 커버 이미지 변경
-        const prevCover = postCover.value.trim();
+      if (coverOnlyCheck.checked) {
+        // 상단 대표 커버로만 지정 (본문에는 마크다운 삽입 안 함)
         postCover.value = newPath;
-
-        // 2. 본문 안에 있던 기존 이미지 마크다운(![...](...))을 전부 새 경로로 치환
-        if (prevCover && postContent.value.includes(prevCover)) {
-          postContent.value = postContent.value.split(prevCover).join(newPath);
-        } else {
-          // 기존 이미지 태그를 찾아서 첫 번째 이미지를 교체하거나 상단에 삽입
-          const imgRegex = /!\[[^\]]*\]\([^)]+\)/;
-          if (imgRegex.test(postContent.value)) {
-            postContent.value = postContent.value.replace(imgRegex, `![대표 이미지](${newPath})`);
-          } else {
-            postContent.value = `![대표 이미지](${newPath})\n\n` + postContent.value;
-          }
-        }
+        // 본문에 혹시 잘못 들어가 있던 이전 이미지 마크다운(![...](...))이 있다면 자동 정리
+        postContent.value = postContent.value.replace(/!\[.*?\]\(.*?\)\s*/g, "");
       } else {
+        // 본문 중간 삽입 모드일 때만 커서 위치에 마크다운 삽입
         const pos = postContent.selectionStart;
         postContent.value = postContent.value.slice(0, pos) + `\n\n![이미지](${newPath})\n\n` + postContent.value.slice(pos);
       }
@@ -178,8 +176,17 @@
   publishBtn.addEventListener("click", async () => {
     const token = getToken();
     if (!token) { alert("토큰이 필요합니다."); return; }
-    const title = postTitle.value.trim(), cat = postCategory.value.trim() || "일반", cov = postCover.value.trim(), body = postContent.value.trim();
+    const title = postTitle.value.trim(), cat = postCategory.value.trim() || "일반", cov = postCover.value.trim();
+    let body = postContent.value.trim();
     if (!title || !body) { alert("제목과 본문을 입력하세요."); return; }
+
+    // 대표 이미지가 있을 때 본문에 중복된 해당 이미지 마크다운이 남아있으면 자동 제거
+    if (cov) {
+      const escapedCov = cov.replace(/[.*+?^${}()|[\]\]/g, "\\$&");
+      const duplicatePattern = new RegExp(`!\[.*?\]\(${escapedCov}\)\s*`, "g");
+      body = body.replace(duplicatePattern, "");
+    }
+
     publishBtn.disabled = true;
     statusMsg.innerText = "⏳ 저장 중...";
     const now = new Date();
@@ -187,13 +194,12 @@
     const filename = editFilePath ? editFilePath : `content/posts/${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.md`;
     const dateStr = existingDateStr ? existingDateStr : `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}+09:00`;
     
-    // Front Matter 생성: cover.image와 image 둘 다 작성하여 100% 호환 보장
     let coverText = "";
     if (cov) {
       coverText = `image: "${cov}"\ncover:\n  image: "${cov}"\n`;
     }
     const fullText = `---\ntitle: "${title.replace(/"/g, "\"")}"\ndate: ${dateStr}\ncategories:\n  - "${cat}"\n${coverText}---\n\n${body}\n`;
-    const payload = { message: editFilePath ? `fix: update "${title}" and replace cover image` : `feat: new post "${title}"`, content: btoa(unescape(encodeURIComponent(fullText))), branch: BRANCH };
+    const payload = { message: editFilePath ? `fix: update "${title}" (cover only)` : `feat: new post "${title}"`, content: btoa(unescape(encodeURIComponent(fullText))), branch: BRANCH };
     if (editFilePath && existingSha) payload.sha = existingSha;
 
     try {
@@ -203,7 +209,7 @@
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error("저장 실패");
-      alert(editFilePath ? "기존 사진 교체 및 수정 완료!" : "발행 완료!");
+      alert("성공적으로 저장되었습니다! 상단 메인 히어로에만 깔끔하게 노출됩니다.");
       window.location.href = "{{ "" | absURL }}";
     } catch(e) { alert("에러: " + e.message); } finally { publishBtn.disabled = false; }
   });
