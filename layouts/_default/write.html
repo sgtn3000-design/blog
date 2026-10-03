@@ -3,8 +3,9 @@
 <div class="editor-container" style="max-width: 880px; margin: 0 auto; padding: 1.5rem 1rem;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
     <h2 id="editor-page-title" style="margin: 0; font-size: 1.5rem;">✍️ 블로그 글 & 사진 저작도구</h2>
-    <a href="{{ "" | absURL }}" style="font-size: 0.9rem; color: #666; text-decoration: none;">← 홈으로 돌아가기</a>
+    <a href="{{ site.BaseURL }}" style="font-size: 0.9rem; color: #666; text-decoration: none;">← 홈으로 돌아가기</a>
   </div>
+
   <div id="token-box" style="display: none; background: #fff3cd; border: 1px solid #ffeeba; padding: 12px 16px; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.88rem; color: #856404;">
     <strong>GitHub 토큰 설정:</strong>
     <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -12,11 +13,13 @@
       <button id="save-token-btn" style="padding: 6px 14px; background: #3b82f6; color: #fff; border: none; border-radius: 4px; cursor: pointer;">저장</button>
     </div>
   </div>
+
   <div class="editor-form" style="display: flex; flex-direction: column; gap: 14px;">
     <div>
       <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">글 제목</label>
       <input type="text" id="post-title" placeholder="글 제목을 입력하세요" style="width: 100%; font-size: 1.25rem; font-weight: bold; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
     </div>
+
     <div style="display: flex; gap: 12px;">
       <div style="flex: 1;">
         <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">카테고리</label>
@@ -27,16 +30,19 @@
         <input type="text" id="post-cover" placeholder="/images/xxx.webp" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
       </div>
     </div>
-    <div id="drop-zone" style="border: 2px dashed #3b82f6; border-radius: 8px; padding: 1.2rem; text-align: center; background: rgba(59, 130, 246, 0.03); cursor: pointer;">
-      <p style="margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 600; color: #2563eb;">📸 사진 업로드 / 교체 (클릭하거나 파일을 여기로 드래그)</p>
-      <p style="margin: 0; font-size: 0.8rem; color: #666;">사진을 넣으면 <strong>WebP 자동 압축</strong> 후 업로드되며, <strong>기존 사진은 자동 삭제</strong>됩니다.</p>
+
+    <div id="drop-zone" style="border: 2px dashed #3b82f6; border-radius: 8px; padding: 1.8rem; text-align: center; background: rgba(59, 130, 246, 0.04); cursor: pointer; transition: all 0.2s;">
+      <p style="margin: 0 0 6px 0; font-size: 1.05rem; font-weight: 600; color: #2563eb; pointer-events: none;">📸 사진 업로드 / 교체 (클릭하거나 파일을 여기로 드래그)</p>
+      <p style="margin: 0; font-size: 0.82rem; color: #666; pointer-events: none;">어떤 사진이든 넣으면 자동으로 <strong>WebP 초경량 압축</strong> 후 업로드됩니다.</p>
       <input type="file" id="image-file-input" accept="image/*" style="display: none;" />
       <div id="upload-status" style="margin-top: 8px; font-size: 0.85rem; font-weight: 500;"></div>
     </div>
+
     <div>
       <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">본문 내용</label>
       <textarea id="post-content" rows="18" placeholder="본문 내용을 입력하세요" style="width: 100%; font-size: 1rem; line-height: 1.6; padding: 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-family: inherit; resize: vertical; background: var(--theme); color: var(--content);"></textarea>
     </div>
+
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
       <span id="status-msg" style="font-size: 0.9rem; font-weight: 500;"></span>
       <div style="display: flex; gap: 10px;">
@@ -58,42 +64,84 @@
   const postCover = document.getElementById("post-cover"), postContent = document.getElementById("post-content");
 
   const urlParams = new URLSearchParams(window.location.search);
-  let rawPath = urlParams.get("path") || "";
-if (rawPath.startsWith("/")) rawPath = rawPath.slice(1);
-const editFilePath = rawPath ? (rawPath.startsWith("content/") ? rawPath : "content/" + rawPath) : "";
+  let rawP = urlParams.get("path") || "";
+  rawP = decodeURIComponent(rawP).replace(/^[\/\\]+/, "").replace(/\\/g, "/");
+  const editFilePath = rawP ? (rawP.startsWith("content/") ? rawP : "content/" + rawP) : "";
   let existingDateStr = null;
 
   function getToken() { return localStorage.getItem("blog_gh_token") || ""; }
   function checkToken() { tokenBox.style.display = getToken() ? "none" : "block"; }
   saveTokenBtn.onclick = () => { const v = tokenInput.value.trim(); if(v){ localStorage.setItem("blog_gh_token", v); checkToken(); alert("토큰 저장 완료!"); if(editFilePath) loadExistingPost(); }};
-  resetTokenBtn.onclick = () => { if(confirm("토큰을 재설정할까요?")){ localStorage.removeItem("blog_gh_token"); tokenInput.value = ""; checkToken(); }};
+  resetTokenBtn.onclick = () => { if(confirm("토큰을 재설정하시겠습니까?")){ localStorage.removeItem("blog_gh_token"); tokenInput.value = ""; checkToken(); }};
   checkToken();
 
   function b64Dec(s){ return decodeURIComponent(atob(s).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join("")); }
   function b64Enc(s){ return btoa(encodeURIComponent(s).replace(/%([0-9A-F]{2})/g, (m, p) => String.fromCharCode("0x" + p))); }
 
   async function loadExistingPost() {
-    const token = getToken(); if (!token) return;
-    pageTitle.innerText = "✏️️ 기존 글 수정 모드"; publishBtn.innerText = "💾 수정 완료 및 반영"; publishBtn.style.background = "#059669";
+    const token = getToken();
+    if (!token) {
+      tokenBox.style.display = "block";
+      alert("글을 수정하려면 먼저 GitHub 토큰을 저장해야 합니다.");
+      return;
+    }
+    pageTitle.innerText = "✏️ 기존 글 수정 모드";
+    publishBtn.innerText = "💾 수정 완료 및 반영";
+    publishBtn.style.background = "#059669";
+    statusMsg.innerText = "기존 글을 불러오는 중...";
+
     try {
-      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${editFilePath}?ref=${BRANCH}&t=${Date.now()}`, { headers: { "Authorization": `Bearer ${token}` } });
+      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${editFilePath}?ref=${BRANCH}&t=${Date.now()}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("GitHub에서 글을 찾지 못했습니다 (" + res.status + ")");
       const data = await res.json();
       let text = b64Dec(data.content.replace(/\s/g, ""));
-      const t = text.match(/^title:\s*["']?(.*?)["']?$/m); if (t) postTitle.value = t[1].trim();
-      const c = text.match(/categories:[\s\S]*?-\s*["']?(.*?)["']?$/m); if (c) postCategory.value = c[1].trim();
-      const img = text.match(/image:\s*["']?(.*?)["']?$/m); if (img) postCover.value = img[1].trim();
-      const d = text.match(/^date:\s*(.*?)$/m); if (d) existingDateStr = d[1].trim();
+
+      const t = text.match(/^title:\s*["']?(.*?)["']?$/m);
+      if (t) postTitle.value = t[1].trim();
+
+      const c = text.match(/categories:[\s\S]*?-\s*["']?(.*?)["']?$/m);
+      if (c) postCategory.value = c[1].trim();
+
+      const img = text.match(/image:\s*["']?(.*?)["']?$/m);
+      if (img) postCover.value = img[1].trim();
+
+      const d = text.match(/^date:\s*(.*?)$/m);
+      if (d) existingDateStr = d[1].trim();
 
       while (text.trim().startsWith("---")) {
         const end = text.indexOf("---", 3);
         if (end !== -1) text = text.substring(end + 3).trimStart(); else break;
       }
       postContent.value = text.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
-    } catch(e) { alert("글 불러오기 실패: " + e.message); statusMsg.innerText = e.message; }
+      statusMsg.innerText = "";
+    } catch(e) {
+      alert("글 불러오기 오류: " + e.message);
+      statusMsg.innerText = e.message;
+      statusMsg.style.color = "#ef4444";
+    }
   }
+
   if (editFilePath) loadExistingPost();
 
+  // 브라우저 기본 드래그 앤 드롭 파일 열기 방지 (필수)
+  ["dragenter", "dragover", "dragleave", "drop"].forEach(name => {
+    window.addEventListener(name, e => e.preventDefault(), false);
+  });
+
+  // 드롭존 클릭 및 드래그 앤 드롭 이벤트
   dropZone.onclick = () => fileInput.click();
+  dropZone.ondragover = e => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.15)"; dropZone.style.borderColor = "#1d4ed8"; };
+  dropZone.ondragleave = e => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.04)"; dropZone.style.borderColor = "#3b82f6"; };
+  dropZone.ondrop = e => {
+    e.preventDefault();
+    dropZone.style.background = "rgba(59, 130, 246, 0.04)";
+    dropZone.style.borderColor = "#3b82f6";
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      uploadImg(e.dataTransfer.files[0]);
+    }
+  };
   fileInput.onchange = e => { if (e.target.files.length) uploadImg(e.target.files[0]); };
 
   async function delOldImg(path, token) {
@@ -112,8 +160,13 @@ const editFilePath = rawPath ? (rawPath.startsWith("content/") ? rawPath : "cont
   }
 
   async function uploadImg(file) {
-    const token = getToken(); if (!token) { alert("토큰을 먼저 입력하세요."); return; }
+    const token = getToken();
+    if (!token) { alert("토큰을 먼저 입력하고 저장해 주세요."); tokenBox.style.display = "block"; return; }
+    if (!file.type.startsWith("image/")) { alert("이미지 파일(JPG, PNG 등)만 올려주세요."); return; }
+
     uploadStatus.innerText = "⚙️ WebP 압축 및 전송 중...";
+    uploadStatus.style.color = "#3b82f6";
+
     const img = new Image(), r = new FileReader();
     r.onload = ev => {
       img.onload = async () => {
@@ -123,15 +176,22 @@ const editFilePath = rawPath ? (rawPath.startsWith("content/") ? rawPath : "cont
         c.getContext("2d").drawImage(img, 0, 0, w, h);
         const b64 = c.toDataURL("image/webp", 0.82).split(",")[1];
         const name = `${Date.now()}_${Math.random().toString(36).substr(2,4)}.webp`;
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/static/images/${name}`, {
-          method: "PUT", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ message: `upload: ${name}`, content: b64, branch: BRANCH })
-        });
-        if (!res.ok) { uploadStatus.innerText = "❌ 업로드 실패"; return; }
-        const oldP = postCover.value.trim(), newP = `/images/${name}`;
-        if (oldP && oldP !== newP) delOldImg(oldP, token);
-        postCover.value = newP;
-        uploadStatus.innerText = "✅ 새 사진 반영 완료 (구 사진 삭제)"; uploadStatus.style.color = "#10b981";
+        
+        try {
+          const res = await fetch(`https://api.github.com/repos/${REPO}/contents/static/images/${name}`, {
+            method: "PUT", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ message: `upload: ${name}`, content: b64, branch: BRANCH })
+          });
+          if (!res.ok) throw new Error("업로드 실패 (" + res.status + ")");
+          const oldP = postCover.value.trim(), newP = `/images/${name}`;
+          if (oldP && oldP !== newP) delOldImg(oldP, token);
+          postCover.value = newP;
+          uploadStatus.innerText = "✅ 새 사진 반영 완료 (WebP 자동 변환됨)";
+          uploadStatus.style.color = "#10b981";
+        } catch(err) {
+          uploadStatus.innerText = "❌ 실패: " + err.message;
+          uploadStatus.style.color = "#ef4444";
+        }
       };
       img.src = ev.target.result;
     };
@@ -144,7 +204,7 @@ const editFilePath = rawPath ? (rawPath.startsWith("content/") ? rawPath : "cont
     let body = postContent.value.trim();
     if (!title || !body) { alert("제목과 본문을 입력하세요."); return; }
 
-    publishBtn.disabled = true; statusMsg.innerText = "⏳ 저장 및 썸네일 동기화 중...";
+    publishBtn.disabled = true; statusMsg.innerText = "⏳ 저장 중...";
     while (body.startsWith("---")) { const end = body.indexOf("---", 3); if (end !== -1) body = body.substring(end + 3).trimStart(); else break; }
     body = body.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
 
@@ -165,9 +225,9 @@ const editFilePath = rawPath ? (rawPath.startsWith("content/") ? rawPath : "cont
       const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${targetFile}`, {
         method: "PUT", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify(payload)
       });
-      if (!res.ok) throw new Error("저장 실패");
-      alert("반영 완료! 메인 화면과 최근글 썸네일까지 새 사진으로 바뀝니다.");
-       absURL }}";| absURL }}";
+      if (!res.ok) throw new Error("저장 실패 (" + res.status + ")");
+      alert("반영 완료! 메인 화면으로 이동합니다.");
+      window.location.href = "{{ site.BaseURL }}?v=" + Date.now();
     } catch(e) { alert("오류: " + e.message); } finally { publishBtn.disabled = false; }
   };
 })();
