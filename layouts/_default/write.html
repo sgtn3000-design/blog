@@ -5,7 +5,6 @@
     <h2 id="editor-page-title" style="margin: 0; font-size: 1.5rem;">✍️ 블로그 글 & 사진 저작도구</h2>
     <a href="{{ "" | absURL }}" style="font-size: 0.9rem; color: #666; text-decoration: none;">← 홈으로 돌아가기</a>
   </div>
-
   <div id="token-box" style="display: none; background: #fff3cd; border: 1px solid #ffeeba; padding: 12px 16px; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.88rem; color: #856404;">
     <strong>GitHub 토큰 설정:</strong>
     <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -13,64 +12,50 @@
       <button id="save-token-btn" style="padding: 6px 14px; background: #3b82f6; color: #fff; border: none; border-radius: 4px; cursor: pointer;">저장</button>
     </div>
   </div>
-
   <div class="editor-form" style="display: flex; flex-direction: column; gap: 14px;">
     <div>
       <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">글 제목</label>
       <input type="text" id="post-title" placeholder="글 제목을 입력하세요" style="width: 100%; font-size: 1.25rem; font-weight: bold; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
     </div>
-
     <div style="display: flex; gap: 12px;">
       <div style="flex: 1;">
         <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">카테고리</label>
-        <input type="text" id="post-category" placeholder="카테고리 (예: 시황, 단상)" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
+        <input type="text" id="post-category" placeholder="카테고리 (예: 일반, 시황)" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
       </div>
       <div style="flex: 2;">
-        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">상단 메인 대표 이미지 경로</label>
+        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">상단 메인 & 썸네일 이미지</label>
         <input type="text" id="post-cover" placeholder="/images/xxx.webp" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
       </div>
     </div>
-
     <div id="drop-zone" style="border: 2px dashed #3b82f6; border-radius: 8px; padding: 1.2rem; text-align: center; background: rgba(59, 130, 246, 0.03); cursor: pointer;">
       <p style="margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 600; color: #2563eb;">📸 사진 업로드 / 교체 (클릭하거나 파일을 여기로 드래그)</p>
-      <p style="margin: 0; font-size: 0.8rem; color: #666;">고화질 사진을 넣으면 자동으로 <strong>WebP 초경량 압축</strong> 후 업로드되어 대표 이미지로 지정됩니다.</p>
+      <p style="margin: 0; font-size: 0.8rem; color: #666;">사진을 넣으면 <strong>WebP 자동 압축</strong> 후 업로드되며, <strong>기존 사진은 자동 삭제</strong>됩니다.</p>
       <input type="file" id="image-file-input" accept="image/*" style="display: none;" />
       <div id="upload-status" style="margin-top: 8px; font-size: 0.85rem; font-weight: 500;"></div>
     </div>
-
     <div>
       <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:4px; color:#555;">본문 내용</label>
       <textarea id="post-content" rows="18" placeholder="본문 내용을 입력하세요" style="width: 100%; font-size: 1rem; line-height: 1.6; padding: 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-family: inherit; resize: vertical; background: var(--theme); color: var(--content);"></textarea>
     </div>
-
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
       <span id="status-msg" style="font-size: 0.9rem; font-weight: 500;"></span>
       <div style="display: flex; gap: 10px;">
         <button id="reset-token-btn" style="padding: 10px 14px; background: transparent; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: #888;">토큰 재설정</button>
-        <button id="publish-btn" style="padding: 10px 24px; background: #3b82f6; color: #fff; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;">🚀 블로그에 발행하기</button>
+        <button id="publish-btn" style="padding: 10px 24px; background: #3b82f6; color: #fff; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;">🚀 블로그에 반영하기</button>
       </div>
     </div>
   </div>
 </div>
-
 <script>
 (function() {
-  const REPO = "sgtn3000-design/blog";
-  const BRANCH = "main";
-  const tokenBox = document.getElementById("token-box");
-  const tokenInput = document.getElementById("gh-token");
-  const saveTokenBtn = document.getElementById("save-token-btn");
-  const resetTokenBtn = document.getElementById("reset-token-btn");
-  const publishBtn = document.getElementById("publish-btn");
-  const statusMsg = document.getElementById("status-msg");
-  const pageTitle = document.getElementById("editor-page-title");
-  const dropZone = document.getElementById("drop-zone");
-  const fileInput = document.getElementById("image-file-input");
-  const uploadStatus = document.getElementById("upload-status");
-  const postTitle = document.getElementById("post-title");
-  const postCategory = document.getElementById("post-category");
-  const postCover = document.getElementById("post-cover");
-  const postContent = document.getElementById("post-content");
+  const REPO = "sgtn3000-design/blog", BRANCH = "main";
+  const tokenBox = document.getElementById("token-box"), tokenInput = document.getElementById("gh-token");
+  const saveTokenBtn = document.getElementById("save-token-btn"), resetTokenBtn = document.getElementById("reset-token-btn");
+  const publishBtn = document.getElementById("publish-btn"), statusMsg = document.getElementById("status-msg");
+  const pageTitle = document.getElementById("editor-page-title"), dropZone = document.getElementById("drop-zone");
+  const fileInput = document.getElementById("image-file-input"), uploadStatus = document.getElementById("upload-status");
+  const postTitle = document.getElementById("post-title"), postCategory = document.getElementById("post-category");
+  const postCover = document.getElementById("post-cover"), postContent = document.getElementById("post-content");
 
   const urlParams = new URLSearchParams(window.location.search);
   const editFilePath = urlParams.get("path");
@@ -78,218 +63,111 @@
 
   function getToken() { return localStorage.getItem("blog_gh_token") || ""; }
   function checkToken() { tokenBox.style.display = getToken() ? "none" : "block"; }
-  saveTokenBtn.addEventListener("click", () => {
-    const val = tokenInput.value.trim();
-    if (val) { localStorage.setItem("blog_gh_token", val); checkToken(); alert("토큰 저장 완료!"); if (editFilePath) loadExistingPost(); }
-  });
-  resetTokenBtn.addEventListener("click", () => {
-    if (confirm("토큰을 재설정하시겠습니까?")) { localStorage.removeItem("blog_gh_token"); tokenInput.value = ""; checkToken(); }
-  });
+  saveTokenBtn.onclick = () => { const v = tokenInput.value.trim(); if(v){ localStorage.setItem("blog_gh_token", v); checkToken(); alert("토큰 저장 완료!"); if(editFilePath) loadExistingPost(); }};
+  resetTokenBtn.onclick = () => { if(confirm("토큰을 재설정할까요?")){ localStorage.removeItem("blog_gh_token"); tokenInput.value = ""; checkToken(); }};
   checkToken();
 
-  function b64DecodeUnicode(str) {
-    return decodeURIComponent(atob(str).split("").map(function(c) {
-      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(""));
-  }
+  function b64Dec(s){ return decodeURIComponent(atob(s).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join("")); }
+  function b64Enc(s){ return btoa(encodeURIComponent(s).replace(/%([0-9A-F]{2})/g, (m, p) => String.fromCharCode("0x" + p))); }
 
-  function b64EncodeUnicode(str) {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-      return String.fromCharCode("0x" + p1);
-    }));
-  }
-
-  // 꼬인 머리말들을 완벽히 걸러내는 파서
   async function loadExistingPost() {
-    const token = getToken();
-    if (!token) return;
-    pageTitle.innerText = "✏️ 기존 글 수정 모드";
-    publishBtn.innerText = "💾 수정 완료 및 반영";
-    publishBtn.style.background = "#059669";
-    statusMsg.innerText = "기존 글 데이터를 불러오는 중...";
-
+    const token = getToken(); if (!token) return;
+    pageTitle.innerText = "✏️️ 기존 글 수정 모드"; publishBtn.innerText = "💾 수정 완료 및 반영"; publishBtn.style.background = "#059669";
     try {
-      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${editFilePath}?ref=${BRANCH}&t=${Date.now()}`, {
-        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
-      });
-      if (!res.ok) throw new Error("글을 불러오지 못했습니다.");
+      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${editFilePath}?ref=${BRANCH}&t=${Date.now()}`, { headers: { "Authorization": `Bearer ${token}` } });
       const data = await res.json();
-      let text = b64DecodeUnicode(data.content.replace(/\s/g, ""));
+      let text = b64Dec(data.content.replace(/\s/g, ""));
+      const t = text.match(/^title:\s*["']?(.*?)["']?$/m); if (t) postTitle.value = t[1].trim();
+      const c = text.match(/categories:[\s\S]*?-\s*["']?(.*?)["']?$/m); if (c) postCategory.value = c[1].trim();
+      const img = text.match(/image:\s*["']?(.*?)["']?$/m); if (img) postCover.value = img[1].trim();
+      const d = text.match(/^date:\s*(.*?)$/m); if (d) existingDateStr = d[1].trim();
 
-      // 1. 메타데이터 추출 (가장 마지막에 유효한 값 우선)
-      const tMatches = text.match(/^title:\s*["']?(.*?)["']?$/gm);
-      if (tMatches) {
-        const lastT = tMatches[tMatches.length - 1].replace(/^title:\s*["']?/, "").replace(/["']?$/, "");
-        postTitle.value = lastT.trim();
+      while (text.trim().startsWith("---")) {
+        const end = text.indexOf("---", 3);
+        if (end !== -1) text = text.substring(end + 3).trimStart(); else break;
       }
-
-      const cMatches = text.match(/categories:[\s\S]*?-\s*["']?(.*?)["']?$/m);
-      if (cMatches) postCategory.value = cMatches[1].trim();
-
-      const iMatches = text.match(/image:\s*["']?(.*?)["']?$/gm);
-      if (iMatches) {
-        const lastI = iMatches[iMatches.length - 1].replace(/^image:\s*["']?/, "").replace(/["']?$/, "");
-        postCover.value = lastI.trim();
-      }
-
-      const dMatches = text.match(/^date:\s*(.*?)$/gm);
-      if (dMatches) {
-        existingDateStr = dMatches[0].replace(/^date:\s*/, "").trim();
-      }
-
-      // 2. 머리말(--- ... ---) 블록을 본문에서 완전히 도려내기
-      let cleanBody = text;
-      // 반복해서 모든 --- 머리말 블록 제거
-      while (cleanBody.trim().startsWith("---")) {
-        const endIdx = cleanBody.indexOf("---", 3);
-        if (endIdx !== -1) {
-          cleanBody = cleanBody.substring(endIdx + 3).trimStart();
-        } else {
-          break;
-        }
-      }
-
-      // 본문 안의 이미지 태그 제거
-      cleanBody = cleanBody.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
-      postContent.value = cleanBody;
-      statusMsg.innerText = "";
-    } catch(e) {
-      statusMsg.innerText = "불러오기 오류: " + e.message;
-      statusMsg.style.color = "#ef4444";
-    }
+      postContent.value = text.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
+    } catch(e) { statusMsg.innerText = e.message; }
   }
-
   if (editFilePath) loadExistingPost();
 
-  dropZone.addEventListener("click", () => fileInput.click());
-  dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.1)"; });
-  dropZone.addEventListener("dragleave", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.03)"; });
-  dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.style.background = "rgba(59, 130, 246, 0.03)";
-    if (e.dataTransfer.files.length) processAndUploadImage(e.dataTransfer.files[0]);
-  });
-  fileInput.addEventListener("change", (e) => {
-    if (e.target.files.length) processAndUploadImage(e.target.files[0]);
-  });
+  dropZone.onclick = () => fileInput.click();
+  fileInput.onchange = e => { if (e.target.files.length) uploadImg(e.target.files[0]); };
 
-  function compressImageToWebP(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          let w = img.width, h = img.height;
-          if (w > 1200) { h = Math.round((h * 1200) / w); w = 1200; }
-          const canvas = document.createElement("canvas");
-          canvas.width = w; canvas.height = h;
-          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-          const base64 = canvas.toDataURL("image/webp", 0.82).split(",")[1];
-          resolve({ base64, size: (Math.round((base64.length * 3) / 4) / 1024).toFixed(1) });
-        };
-        img.onerror = reject;
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function processAndUploadImage(file) {
-    const token = getToken();
-    if (!token) { alert("토큰을 먼저 입력해 주세요."); tokenBox.style.display = "block"; return; }
-    uploadStatus.innerText = "⚙️ WebP 압축 및 전송 중..."; uploadStatus.style.color = "#3b82f6";
+  async function delOldImg(path, token) {
+    if (!path || path.includes("category-default")) return;
+    const clean = "static/" + (path.startsWith("/") ? path.slice(1) : path);
     try {
-      const comp = await compressImageToWebP(file);
-      const name = `${Date.now()}_${Math.random().toString(36).substr(2,4)}.webp`;
-      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/static/images/${name}`, {
-        method: "PUT",
-        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" },
-        body: JSON.stringify({ message: `upload: ${name}`, content: comp.base64, branch: BRANCH })
-      });
-      if (!res.ok) throw new Error("사진 업로드 실패");
-      uploadStatus.innerText = `✅ 새 사진 업로드 완료 (${comp.size}KB WebP)`; uploadStatus.style.color = "#10b981";
-      const newPath = `/images/${name}`;
-      postCover.value = newPath;
-    } catch(err) {
-      uploadStatus.innerText = `❌ ${err.message}`;
-      uploadStatus.style.color = "#ef4444";
-    }
+      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${clean}?ref=${BRANCH}`, { headers: { "Authorization": `Bearer ${token}` } });
+      if (r.ok) {
+        const d = await r.json();
+        await fetch(`https://api.github.com/repos/${REPO}/contents/${clean}`, {
+          method: "DELETE", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "cleanup: remove old image", sha: d.sha, branch: BRANCH })
+        });
+      }
+    } catch(e) {}
   }
 
-  publishBtn.addEventListener("click", async () => {
-    const token = getToken();
-    if (!token) { alert("토큰이 필요합니다."); return; }
-    const title = postTitle.value.trim();
-    const cat = postCategory.value.trim() || "일반";
-    const cov = postCover.value.trim();
-    let body = postContent.value.trim();
+  async function uploadImg(file) {
+    const token = getToken(); if (!token) { alert("토큰을 먼저 입력하세요."); return; }
+    uploadStatus.innerText = "⚙️ WebP 압축 및 전송 중...";
+    const img = new Image(), r = new FileReader();
+    r.onload = ev => {
+      img.onload = async () => {
+        let w = img.width, h = img.height;
+        if (w > 1200) { h = Math.round((h * 1200) / w); w = 1200; }
+        const c = document.createElement("canvas"); c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        const b64 = c.toDataURL("image/webp", 0.82).split(",")[1];
+        const name = `${Date.now()}_${Math.random().toString(36).substr(2,4)}.webp`;
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/static/images/${name}`, {
+          method: "PUT", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ message: `upload: ${name}`, content: b64, branch: BRANCH })
+        });
+        if (!res.ok) { uploadStatus.innerText = "❌ 업로드 실패"; return; }
+        const oldP = postCover.value.trim(), newP = `/images/${name}`;
+        if (oldP && oldP !== newP) delOldImg(oldP, token);
+        postCover.value = newP;
+        uploadStatus.innerText = "✅ 새 사진 반영 완료 (구 사진 삭제)"; uploadStatus.style.color = "#10b981";
+      };
+      img.src = ev.target.result;
+    };
+    r.readAsDataURL(file);
+  }
 
+  publishBtn.onclick = async () => {
+    const token = getToken(); if (!token) { alert("토큰이 필요합니다."); return; }
+    const title = postTitle.value.trim(), cat = postCategory.value.trim() || "일반", cov = postCover.value.trim();
+    let body = postContent.value.trim();
     if (!title || !body) { alert("제목과 본문을 입력하세요."); return; }
 
-    publishBtn.disabled = true;
-    statusMsg.innerText = "⏳ 저장 중...";
-    statusMsg.style.color = "#3b82f6";
-
-    // 본문 안에 행여라도 들어가 있는 머리말 텍스트나 이미지 태그 완전히 제거
-    while (body.startsWith("---")) {
-      const endIdx = body.indexOf("---", 3);
-      if (endIdx !== -1) body = body.substring(endIdx + 3).trimStart();
-      else break;
-    }
+    publishBtn.disabled = true; statusMsg.innerText = "⏳ 저장 및 썸네일 동기화 중...";
+    while (body.startsWith("---")) { const end = body.indexOf("---", 3); if (end !== -1) body = body.substring(end + 3).trimStart(); else break; }
     body = body.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
 
-    const now = new Date();
-    const pad = n => String(n).padStart(2, "0");
-    const targetFile = editFilePath ? editFilePath : `content/posts/${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.md`;
-    const dateStr = existingDateStr ? existingDateStr : `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}+09:00`;
-
-    let coverBlock = "";
-    if (cov) {
-      coverBlock = `image: "${cov}"\ncover:\n  image: "${cov}"\n`;
-    }
-
-    const fullText = `---\ntitle: "${title.replace(/"/g, "\"")}"\ndate: ${dateStr}\ncategories:\n  - "${cat}"\n${coverBlock}---\n\n${body}\n`;
+    const now = new Date(), pad = n => String(n).padStart(2, "0");
+    const targetFile = editFilePath || `content/posts/${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.md`;
+    const dateStr = existingDateStr || `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}+09:00`;
+    const covBlock = cov ? `image: "${cov}"\ncover:\n  image: "${cov}"\n` : "";
+    const fullText = `---\ntitle: "${title.replace(/"/g, '\\"')}"\ndate: ${dateStr}\ncategories:\n  - "${cat}"\n${covBlock}---\n\n${body}\n`;
 
     try {
       let sha = null;
       if (editFilePath) {
-        const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${targetFile}?ref=${BRANCH}&t=${Date.now()}`, {
-          headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
-        });
-        if (getRes.ok) {
-          const getData = await getRes.json();
-          sha = getData.sha;
-        }
+        const g = await fetch(`https://api.github.com/repos/${REPO}/contents/${targetFile}?ref=${BRANCH}&t=${Date.now()}`, { headers: { "Authorization": `Bearer ${token}` } });
+        if (g.ok) { const gd = await g.json(); sha = gd.sha; }
       }
-
-      const payload = {
-        message: editFilePath ? `fix: update "${title}" via web editor` : `feat: new post "${title}" via web editor`,
-        content: b64EncodeUnicode(fullText),
-        branch: BRANCH
-      };
+      const payload = { message: `fix: update "${title}" via web editor`, content: b64Enc(fullText), branch: BRANCH };
       if (sha) payload.sha = sha;
-
       const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${targetFile}`, {
-        method: "PUT",
-        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        method: "PUT", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify(payload)
       });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "저장 실패");
-      }
-
-      alert("저장이 완료되었습니다!");
+      if (!res.ok) throw new Error("저장 실패");
+      alert("반영 완료! 메인 화면과 최근글 썸네일까지 새 사진으로 바뀝니다.");
       window.location.href = "{{ "" | absURL }}";
-    } catch(e) {
-      alert("저장 오류: " + e.message);
-      statusMsg.innerText = "❌ 오류: " + e.message;
-      statusMsg.style.color = "#ef4444";
-    } finally {
-      publishBtn.disabled = false;
-    }
-  });
+    } catch(e) { alert("오류: " + e.message); } finally { publishBtn.disabled = false; }
+  };
 })();
 </script>
 {{- end }}
