@@ -16,19 +16,19 @@
     <div><input type="text" id="post-title" placeholder="글 제목을 입력하세요" style="width: 100%; font-size: 1.3rem; font-weight: bold; padding: 12px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" /></div>
     <div style="display: flex; gap: 12px;">
       <input type="text" id="post-category" placeholder="카테고리 (예: 시황, 단상)" style="flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
-      <input type="text" id="post-cover" placeholder="대표 커버 이미지 경로 (사진 업로드 시 자동 입력)" style="flex: 2; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
+      <input type="text" id="post-cover" placeholder="대표 커버 이미지 경로" style="flex: 2; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--theme); color: var(--content);" />
     </div>
     <div id="drop-zone" style="border: 2px dashed #3b82f6; border-radius: 8px; padding: 1.2rem; text-align: center; background: rgba(59, 130, 246, 0.03); cursor: pointer;">
-      <p style="margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 600; color: #2563eb;">📸 사진 추가 (클릭하거나 이미지를 여기로 드래그)</p>
-      <p style="margin: 0; font-size: 0.8rem; color: #666;">고화질 사진을 넣으면 가로 1200px 리사이즈 및 <strong>WebP 초경량 압축</strong> 후 자동 업로드됩니다.</p>
+      <p style="margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 600; color: #2563eb;">📸 사진 추가 / 교체 (클릭하거나 이미지를 여기로 드래그)</p>
+      <p style="margin: 0; font-size: 0.8rem; color: #666;">기존 사진이 있으면 자동으로 덮어쓰고 본문과 커버 이미지 전체를 새 사진으로 교체합니다.</p>
       <input type="file" id="image-file-input" accept="image/*" style="display: none;" />
       <div style="margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #444;">
-        <input type="checkbox" id="set-as-cover" checked />
-        <label for="set-as-cover" style="cursor: pointer;">이 사진을 대표(커버) 이미지로도 자동 지정</label>
+        <input type="checkbox" id="overwrite-existing" checked />
+        <label for="overwrite-existing" style="cursor: pointer;"><strong>기존 본문/커버 사진을 이 사진으로 완전 교체</strong></label>
       </div>
       <div id="upload-status" style="margin-top: 8px; font-size: 0.85rem; font-weight: 500;"></div>
     </div>
-    <div><textarea id="post-content" rows="18" placeholder="본문 내용 (사진 업로드 시 커서 자리에 마크다운 코드가 자동 삽입됩니다)" style="width: 100%; font-size: 1rem; line-height: 1.6; padding: 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-family: inherit; resize: vertical; background: var(--theme); color: var(--content);"></textarea></div>
+    <div><textarea id="post-content" rows="18" placeholder="본문 내용" style="width: 100%; font-size: 1rem; line-height: 1.6; padding: 14px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-family: inherit; resize: vertical; background: var(--theme); color: var(--content);"></textarea></div>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
       <span id="status-msg" style="font-size: 0.9rem; font-weight: 500;"></span>
       <div style="display: flex; gap: 10px;">
@@ -56,12 +56,13 @@
   const postCategory = document.getElementById("post-category");
   const postCover = document.getElementById("post-cover");
   const postContent = document.getElementById("post-content");
-  const setAsCover = document.getElementById("set-as-cover");
+  const overwriteCheck = document.getElementById("overwrite-existing");
 
   const urlParams = new URLSearchParams(window.location.search);
   const editFilePath = urlParams.get("path");
   let existingSha = null;
   let existingDateStr = null;
+  let oldImagePath = "";
 
   function getToken() { return localStorage.getItem("blog_gh_token") || ""; }
   function checkToken() { tokenBox.style.display = getToken() ? "none" : "block"; }
@@ -94,7 +95,11 @@
         const fm = fmMatch[1], body = fmMatch[2];
         const t = fm.match(/title:\s*["']?(.*?)["']?$/m); if (t) postTitle.value = t[1];
         const c = fm.match(/categories:\s*\n\s*-\s*["']?(.*?)["']?$/m); if (c) postCategory.value = c[1];
-        const img = fm.match(/image:\s*["']?(.*?)["']?$/m); if (img) postCover.value = img[1];
+        const img = fm.match(/image:\s*["']?(.*?)["']?$/m); 
+        if (img) { 
+          postCover.value = img[1]; 
+          oldImagePath = img[1];
+        }
         const d = fm.match(/date:\s*(.*?)$/m); if (d) existingDateStr = d[1].trim();
         postContent.value = body.trimStart();
       } else { postContent.value = rawText; }
@@ -103,7 +108,7 @@
   }
   if (editFilePath) loadExistingPost();
 
-  dropZone.addEventListener("click", (e) => { if (e.target !== setAsCover && e.target.tagName !== "LABEL") fileInput.click(); });
+  dropZone.addEventListener("click", (e) => { if (e.target !== overwriteCheck && e.target.tagName !== "LABEL") fileInput.click(); });
   dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.1)"; });
   dropZone.addEventListener("dragleave", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.03)"; });
   dropZone.addEventListener("drop", (e) => { e.preventDefault(); dropZone.style.background = "rgba(59, 130, 246, 0.03)"; if (e.dataTransfer.files.length) processAndUploadImage(e.dataTransfer.files[0]); });
@@ -143,11 +148,30 @@
         body: JSON.stringify({ message: `upload: ${name}`, content: comp.base64, branch: BRANCH })
       });
       if (!res.ok) throw new Error("업로드 실패");
-      uploadStatus.innerText = `✅ 업로드 완료 (${comp.size}KB WebP)`; uploadStatus.style.color = "#10b981";
-      const path = `/images/${name}`;
-      if (setAsCover.checked || !postCover.value) postCover.value = path;
-      const pos = postContent.selectionStart;
-      postContent.value = postContent.value.slice(0, pos) + `\n\n![이미지](${path})\n\n` + postContent.value.slice(pos);
+      uploadStatus.innerText = `✅ 새 사진 업로드 완료 (${comp.size}KB WebP)`; uploadStatus.style.color = "#10b981";
+      const newPath = `/images/${name}`;
+
+      if (overwriteCheck.checked) {
+        // 1. 대표 커버 이미지 변경
+        const prevCover = postCover.value.trim();
+        postCover.value = newPath;
+
+        // 2. 본문 안에 있던 기존 이미지 마크다운(![...](...))을 전부 새 경로로 치환
+        if (prevCover && postContent.value.includes(prevCover)) {
+          postContent.value = postContent.value.split(prevCover).join(newPath);
+        } else {
+          // 기존 이미지 태그를 찾아서 첫 번째 이미지를 교체하거나 상단에 삽입
+          const imgRegex = /!\[[^\]]*\]\([^)]+\)/;
+          if (imgRegex.test(postContent.value)) {
+            postContent.value = postContent.value.replace(imgRegex, `![대표 이미지](${newPath})`);
+          } else {
+            postContent.value = `![대표 이미지](${newPath})\n\n` + postContent.value;
+          }
+        }
+      } else {
+        const pos = postContent.selectionStart;
+        postContent.value = postContent.value.slice(0, pos) + `\n\n![이미지](${newPath})\n\n` + postContent.value.slice(pos);
+      }
     } catch(err) { uploadStatus.innerText = `❌ ${err.message}`; uploadStatus.style.color = "#ef4444"; }
   }
 
@@ -162,9 +186,14 @@
     const pad = n => String(n).padStart(2, "0");
     const filename = editFilePath ? editFilePath : `content/posts/${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.md`;
     const dateStr = existingDateStr ? existingDateStr : `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}+09:00`;
-    const coverText = cov ? `cover:\n  image: "${cov}"\n` : "";
+    
+    // Front Matter 생성: cover.image와 image 둘 다 작성하여 100% 호환 보장
+    let coverText = "";
+    if (cov) {
+      coverText = `image: "${cov}"\ncover:\n  image: "${cov}"\n`;
+    }
     const fullText = `---\ntitle: "${title.replace(/"/g, "\"")}"\ndate: ${dateStr}\ncategories:\n  - "${cat}"\n${coverText}---\n\n${body}\n`;
-    const payload = { message: editFilePath ? `fix: update "${title}"` : `feat: new post "${title}"`, content: btoa(unescape(encodeURIComponent(fullText))), branch: BRANCH };
+    const payload = { message: editFilePath ? `fix: update "${title}" and replace cover image` : `feat: new post "${title}"`, content: btoa(unescape(encodeURIComponent(fullText))), branch: BRANCH };
     if (editFilePath && existingSha) payload.sha = existingSha;
 
     try {
@@ -174,7 +203,7 @@
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error("저장 실패");
-      alert(editFilePath ? "수정 완료!" : "발행 완료!");
+      alert(editFilePath ? "기존 사진 교체 및 수정 완료!" : "발행 완료!");
       window.location.href = "{{ "" | absURL }}";
     } catch(e) { alert("에러: " + e.message); } finally { publishBtn.disabled = false; }
   });
