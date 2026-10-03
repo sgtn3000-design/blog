@@ -5,7 +5,7 @@
   <div class="hero-cover-overlay"></div>
   <div class="hero-cover-content">
     {{- if .Params.categories }}
-    <div class="hero-category" aria-hidden="true" style="display:none;">
+    <div class="hero-category">
       {{- range .Params.categories }}
       <span>{{ . }}</span>
       {{- end }}
@@ -31,7 +31,6 @@
   </header>
   {{- end }}
 
-  {{/* 본문 수정하기 버튼 (정확한 저장소 sgtn3000-design/blog 연결) */}}
   {{- if .File }}
   <div class="post-edit-bar">
     <a href="https://github.com/sgtn3000-design/blog/edit/main/content/{{ .File.Path }}" target="_blank" rel="noopener noreferrer" class="edit-post-btn">
