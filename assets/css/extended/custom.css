@@ -1248,3 +1248,9 @@ body.is-admin .admin-new-post-btn:hover {
   background: #ef4444 !important;
   color: #ffffff !important;
 }
+
+/* 2026-10-03: 소제목(h3)은 소제목급 여백으로 상향 (굵은문단 구분용 → 대제목급 앞간격) */
+.post-content h3 {
+  margin-top: 2.5em !important;
+  margin-bottom: 1em !important;
+}
