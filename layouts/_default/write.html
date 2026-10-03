@@ -87,62 +87,71 @@
   });
   checkToken();
 
-  // UTF-8 안전 Base64 디코더
   function b64DecodeUnicode(str) {
     return decodeURIComponent(atob(str).split("").map(function(c) {
       return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(""));
   }
 
-  // UTF-8 안전 Base64 인코더
   function b64EncodeUnicode(str) {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
       return String.fromCharCode("0x" + p1);
     }));
   }
 
+  // 꼬인 머리말들을 완벽히 걸러내는 파서
   async function loadExistingPost() {
     const token = getToken();
     if (!token) return;
-    pageTitle.innerText = "✏️️ 기존 글 수정 모드";
+    pageTitle.innerText = "✏️ 기존 글 수정 모드";
     publishBtn.innerText = "💾 수정 완료 및 반영";
     publishBtn.style.background = "#059669";
     statusMsg.innerText = "기존 글 데이터를 불러오는 중...";
+
     try {
       const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${editFilePath}?ref=${BRANCH}&t=${Date.now()}`, {
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
       });
       if (!res.ok) throw new Error("글을 불러오지 못했습니다.");
       const data = await res.json();
-      const rawText = b64DecodeUnicode(data.content.replace(/\s/g, ""));
+      let text = b64DecodeUnicode(data.content.replace(/\s/g, ""));
 
-      // Front Matter 분리 파싱
-      const match = rawText.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-      if (match) {
-        const fm = match[1];
-        const body = match[2];
-
-        // 1. 제목 완벽 추출
-        const tMatch = fm.match(/^title:\s*(?:["'](.*?)["']|(.*))$/m);
-        if (tMatch) postTitle.value = (tMatch[1] || tMatch[2] || "").trim();
-
-        // 2. 카테고리 추출
-        const cMatch = fm.match(/categories:[\s\S]*?-\s*(?:["'](.*?)["']|(.*))$/m);
-        if (cMatch) postCategory.value = (cMatch[1] || cMatch[2] || "").trim();
-
-        // 3. 대표 이미지 추출
-        const iMatch = fm.match(/image:\s*(?:["'](.*?)["']|(.*))$/m);
-        if (iMatch) postCover.value = (iMatch[1] || iMatch[2] || "").trim();
-
-        // 4. 작성일 보존
-        const dMatch = fm.match(/date:\s*(.*?)$/m);
-        if (dMatch) existingDateStr = dMatch[1].trim();
-
-        // 본문에서 혹시 남아있는 이미지 태그 제거 후 본문 창에 배치
-        postContent.value = body.replace(/!\[.*?\]\(.*?\)\s*/g, "").trimStart();
-      } else {
-        postContent.value = rawText;
+      // 1. 메타데이터 추출 (가장 마지막에 유효한 값 우선)
+      const tMatches = text.match(/^title:\s*["']?(.*?)["']?$/gm);
+      if (tMatches) {
+        const lastT = tMatches[tMatches.length - 1].replace(/^title:\s*["']?/, "").replace(/["']?$/, "");
+        postTitle.value = lastT.trim();
       }
+
+      const cMatches = text.match(/categories:[\s\S]*?-\s*["']?(.*?)["']?$/m);
+      if (cMatches) postCategory.value = cMatches[1].trim();
+
+      const iMatches = text.match(/image:\s*["']?(.*?)["']?$/gm);
+      if (iMatches) {
+        const lastI = iMatches[iMatches.length - 1].replace(/^image:\s*["']?/, "").replace(/["']?$/, "");
+        postCover.value = lastI.trim();
+      }
+
+      const dMatches = text.match(/^date:\s*(.*?)$/gm);
+      if (dMatches) {
+        existingDateStr = dMatches[0].replace(/^date:\s*/, "").trim();
+      }
+
+      // 2. 머리말(--- ... ---) 블록을 본문에서 완전히 도려내기
+      let cleanBody = text;
+      // 반복해서 모든 --- 머리말 블록 제거
+      while (cleanBody.trim().startsWith("---")) {
+        const endIdx = cleanBody.indexOf("---", 3);
+        if (endIdx !== -1) {
+          cleanBody = cleanBody.substring(endIdx + 3).trimStart();
+        } else {
+          break;
+        }
+      }
+
+      // 본문 안의 이미지 태그 제거
+      cleanBody = cleanBody.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
+      postContent.value = cleanBody;
       statusMsg.innerText = "";
     } catch(e) {
       statusMsg.innerText = "불러오기 오류: " + e.message;
@@ -200,7 +209,7 @@
       if (!res.ok) throw new Error("사진 업로드 실패");
       uploadStatus.innerText = `✅ 새 사진 업로드 완료 (${comp.size}KB WebP)`; uploadStatus.style.color = "#10b981";
       const newPath = `/images/${name}`;
-      postCover.value = newPath; // 대표 이미지 칸에 바로 주입
+      postCover.value = newPath;
     } catch(err) {
       uploadStatus.innerText = `❌ ${err.message}`;
       uploadStatus.style.color = "#ef4444";
@@ -218,17 +227,20 @@
     if (!title || !body) { alert("제목과 본문을 입력하세요."); return; }
 
     publishBtn.disabled = true;
-    statusMsg.innerText = "⏳ GitHub와 동기화하여 저장 중...";
+    statusMsg.innerText = "⏳ 저장 중...";
     statusMsg.style.color = "#3b82f6";
 
-    // 본문 안에서 이미지 마크다운 완전 제거 (본문 하단 사진 방지)
+    // 본문 안에 행여라도 들어가 있는 머리말 텍스트나 이미지 태그 완전히 제거
+    while (body.startsWith("---")) {
+      const endIdx = body.indexOf("---", 3);
+      if (endIdx !== -1) body = body.substring(endIdx + 3).trimStart();
+      else break;
+    }
     body = body.replace(/!\[.*?\]\(.*?\)\s*/g, "").trim();
 
     const now = new Date();
     const pad = n => String(n).padStart(2, "0");
     const targetFile = editFilePath ? editFilePath : `content/posts/${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.md`;
-    
-    // 날짜: 기존 글이면 원래 날짜 유지, 새 글이면 현재 시간으로 안전한 ISO 생성
     const dateStr = existingDateStr ? existingDateStr : `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}+09:00`;
 
     let coverBlock = "";
@@ -239,7 +251,6 @@
     const fullText = `---\ntitle: "${title.replace(/"/g, "\"")}"\ndate: ${dateStr}\ncategories:\n  - "${cat}"\n${coverBlock}---\n\n${body}\n`;
 
     try {
-      // 충돌(409) 방지: 저장 직전 GitHub에서 해당 파일의 실시간 최신 SHA 조회
       let sha = null;
       if (editFilePath) {
         const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${targetFile}?ref=${BRANCH}&t=${Date.now()}`, {
@@ -269,7 +280,7 @@
         throw new Error(err.message || "저장 실패");
       }
 
-      alert(editFilePath ? "기존 글 수정이 완료되었습니다!" : "새 글이 정상 발행되었습니다!");
+      alert("저장이 완료되었습니다!");
       window.location.href = "{{ "" | absURL }}";
     } catch(e) {
       alert("저장 오류: " + e.message);
