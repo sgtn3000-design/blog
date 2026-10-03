@@ -1,35 +1,27 @@
 <footer class="footer">
     <span>&copy; {{ now.Year }} <a href="{{ "" | absURL }}">{{ site.Title }}</a></span>
-    {{/* 관리자 트리거: 평소엔 거의 안 보이는 연한 파이 기호 */}}
     <span id="secret-admin-trigger" style="cursor: pointer; opacity: 0.12; font-size: 11px; margin-left: 6px; user-select: none;" title="Admin">π</span>
 </footer>
 
 <script>
 (function() {
+  const REPO = 'sgtn3000-design/blog';
+  const BRANCH = 'main';
+
   function applyAdminMode(isActive) {
     const trigger = document.getElementById('secret-admin-trigger');
     if (isActive) {
       document.body.classList.add('is-admin');
-      if (trigger) {
-        trigger.style.opacity = '1';
-        trigger.style.color = '#3b82f6';
-        trigger.style.fontWeight = 'bold';
-      }
+      if (trigger) { trigger.style.opacity = '1'; trigger.style.color = '#3b82f6'; trigger.style.fontWeight = 'bold'; }
     } else {
       document.body.classList.remove('is-admin');
-      if (trigger) {
-        trigger.style.opacity = '0.12';
-        trigger.style.color = 'inherit';
-        trigger.style.fontWeight = 'normal';
-      }
+      if (trigger) { trigger.style.opacity = '0.12'; trigger.style.color = 'inherit'; trigger.style.fontWeight = 'normal'; }
     }
   }
 
-  // 페이지 로드 시 관리자 여부 확인
   const isAdmin = localStorage.getItem('blog_admin_active') === 'true';
   applyAdminMode(isAdmin);
 
-  // 트리거 클릭 이벤트
   const trigger = document.getElementById('secret-admin-trigger');
   if (trigger) {
     trigger.addEventListener('click', function(e) {
@@ -39,17 +31,95 @@
         if (confirm("관리자 모드를 끄시겠습니까?")) {
           localStorage.removeItem('blog_admin_active');
           applyAdminMode(false);
-          alert("관리자 모드가 해제되었습니다. 수정 버튼이 숨겨집니다.");
+          alert("관리자 모드가 해제되었습니다.");
         }
       } else {
         const pin = prompt("관리자 PIN 번호를 입력하세요:");
-        if (pin === "7777") { // 원하시는 비밀번호로 설정
+        if (pin === "7777") {
           localStorage.setItem('blog_admin_active', 'true');
           applyAdminMode(true);
-          alert("관리자 모드 활성화 완료! 수정 버튼이 표시됩니다.");
+          alert("관리자 모드 활성화 완료!");
         } else if (pin !== null) {
           alert("비밀번호가 올바르지 않습니다.");
         }
+      }
+    });
+  }
+
+  // 삭제 버튼 로직
+  const delBtn = document.getElementById('admin-delete-post-btn');
+  if (delBtn) {
+    delBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('blog_gh_token');
+      if (!token) {
+        alert("GitHub 토큰이 등록되어 있지 않습니다. 관리자 새 글 쓰기 화면에서 토큰을 먼저 저장해 주세요.");
+        return;
+      }
+
+      const filePath = delBtn.getAttribute('data-filepath');
+      const coverImg = delBtn.getAttribute('data-coverimage');
+
+      if (!confirm("⚠️ 정말로 이 글을 완전히 삭제하시겠습니까?\n(글 마크다운 및 연결된 사진이 모두 영구 삭제됩니다)")) {
+        return;
+      }
+
+      delBtn.disabled = true;
+      delBtn.innerText = "삭제 중...";
+
+      try {
+        // 1. 포스트 마크다운 파일 SHA 조회 후 DELETE
+        const fileRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${filePath}?ref=${BRANCH}&t=${Date.now()}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!fileRes.ok) throw new Error("글 정보를 가져오지 못했습니다.");
+        const fileData = await fileRes.json();
+
+        const delFileRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${filePath}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `delete: remove post ${filePath}`,
+            sha: fileData.sha,
+            branch: BRANCH
+          })
+        });
+
+        if (!delFileRes.ok) throw new Error("포스트 파일 삭제에 실패했습니다.");
+
+        // 2. 연결된 대표 이미지도 GitHub에서 삭제 (용량 확보, 기본 이미지는 제외)
+        if (coverImg && !coverImg.includes("category-default")) {
+          const cleanImg = "static/" + (coverImg.startsWith("/") ? coverImg.slice(1) : coverImg);
+          try {
+            const imgRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${cleanImg}?ref=${BRANCH}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (imgRes.ok) {
+              const imgData = await imgRes.json();
+              await fetch(`https://api.github.com/repos/${REPO}/contents/${cleanImg}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  message: `cleanup: remove post image ${cleanImg}`,
+                  sha: imgData.sha,
+                  branch: BRANCH
+                })
+              });
+            }
+          } catch(err) {
+            console.warn("이미지 삭제 건너뜀:", err);
+          }
+        }
+
+        alert("글이 성공적으로 삭제되었습니다! 메인 화면으로 이동합니다.");
+        window.location.href = "{{ "" | absURL }}";
+      } catch(err) {
+        alert("삭제 중 오류가 발생했습니다: " + err.message);
+        delBtn.disabled = false;
+        delBtn.innerText = "삭제하기";
       }
     });
   }

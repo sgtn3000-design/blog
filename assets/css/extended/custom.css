@@ -1223,3 +1223,28 @@ body.is-admin .admin-new-post-btn {
 body.is-admin .admin-new-post-btn:hover {
   background: #2563eb !important;
 }
+
+/* 관리자 삭제 버튼 스타일 */
+.post-edit-bar {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.delete-post-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 4px 10px !important;
+  font-size: 0.85rem !important;
+  color: #ef4444 !important;
+  background: transparent !important;
+  border: 1px solid #ef4444 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.delete-post-btn:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+}
