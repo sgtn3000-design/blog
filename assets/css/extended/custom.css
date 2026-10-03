@@ -1150,3 +1150,15 @@ a.hero-link {
   gap: 8px !important;
   align-items: center !important;
 }
+
+/* 상단 히어로 배너가 있는 포스트에서 본문 내부 첫 번째 H1 제목 숨김 처리 */
+.hero-cover-container ~ .main-container .post-content > h1:first-child,
+.hero-cover-container ~ .main .post-content > h1:first-child,
+body:has(.hero-cover-container) .post-content > h1:first-child {
+  display: none !important;
+}
+
+/* 추가 여백 보정 */
+body:has(.hero-cover-container) .post-edit-bar {
+  margin-top: 0.5rem !important;
+}
