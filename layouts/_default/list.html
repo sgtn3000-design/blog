@@ -1,0 +1,38 @@
+{{- define "hero" }}
+{{/* 카테고리/태그/목록 페이지에서는 상단 히어로 배너를 렌더링하지 않음 */}}
+{{- end }}
+
+{{- define "main" }}
+<div class="list-header">
+  <h2 class="list-title">{{ .Title }}</h2>
+</div>
+
+<div class="post-grid-container">
+  {{- range .Pages }}
+  {{- $postImg := "" }}
+  {{- if .Params.cover.image }}
+    {{- $postImg = .Params.cover.image }}
+  {{- else if .Params.image }}
+    {{- $postImg = .Params.image }}
+  {{- end }}
+  <article class="grid-card {{ if not $postImg }}card-without-image{{ end }}">
+    <a href="{{ .Permalink }}" class="card-thumb-link">
+      {{- if $postImg }}
+      <img src="{{ $postImg | absURL }}" alt="{{ .Title }}" loading="lazy" class="card-thumb" />
+      {{- else }}
+      <div class="card-thumb-empty-box"></div>
+      {{- end }}
+    </a>
+    <div class="card-body">
+      <h3 class="card-title">
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </h3>
+      <p class="card-summary">{{ .Summary | plainify | htmlUnescape }}</p>
+      <div class="card-meta">
+        <span class="card-date">{{ .Date.Format "2006. 1. 2." }}</span>
+      </div>
+    </div>
+  </article>
+  {{- end }}
+</div>
+{{- end }}
