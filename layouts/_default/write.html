@@ -165,7 +165,7 @@
       });
       if (!res.ok) throw new Error("저장 실패");
       alert("반영 완료! 메인 화면과 최근글 썸네일까지 새 사진으로 바뀝니다.");
-      window.location.href = "{{ "" | absURL }}";
+       absURL }}";| absURL }}";
     } catch(e) { alert("오류: " + e.message); } finally { publishBtn.disabled = false; }
   };
 })();
