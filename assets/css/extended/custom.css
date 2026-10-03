@@ -1185,3 +1185,17 @@ body:has(.hero-cover-container) .post-edit-bar {
   border-top: 1px solid var(--border) !important;
   border-bottom: none !important;
 }
+
+/* 관리자 모드가 아닐 때는 무조건 완전 숨김 */
+.post-edit-bar.admin-only-edit {
+  display: none !important;
+}
+
+/* 관리자 모드가 켜졌을 때(body에 is-admin 클래스가 붙을 때)만 하단에 표시 */
+body.is-admin .post-edit-bar.admin-only-edit {
+  display: flex !important;
+  justify-content: flex-end !important;
+  margin: 3rem 0 2rem 0 !important;
+  padding-top: 1.2rem !important;
+  border-top: 1px solid var(--border) !important;
+}
