@@ -1,12 +1,10 @@
 <aside class="blog-right-sidebar">
-  <!-- 1. 사이드바 최상단 네비게이션 메뉴 (전체글 | 카테고리 | 태그) -->
   <nav class="sidebar-top-nav">
     {{- range site.Menus.main }}
     <a href="{{ .URL | absURL }}" class="sidebar-nav-link">{{ .Name }}</a>
     {{- end }}
   </nav>
 
-  <!-- 2. 분류 전체보기 위젯 -->
   <div class="sidebar-widget first-widget">
     <h4 class="widget-title align-line-title">분류 전체보기</h4>
     <ul class="category-list">
@@ -20,19 +18,24 @@
     </ul>
   </div>
 
-  <!-- 3. 최근글 위젯 -->
   <div class="sidebar-widget">
     <h4 class="widget-title">최근글</h4>
     <ul class="recent-post-list">
       {{ range first 5 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
+      {{- $tImg := "" }}
+      {{- if .Params.cover.image }}
+        {{- $tImg = .Params.cover.image }}
+      {{- else if .Params.image }}
+        {{- $tImg = .Params.image }}
+      {{- end }}
       <li class="recent-item">
         <div class="recent-text">
           <a href="{{ .Permalink }}" class="recent-title">{{ .Title }}</a>
           <span class="post-date">{{ .Date.Format "2006.01.02" }}</span>
         </div>
-        {{ if .Params.cover.image }}
+        {{ if $tImg }}
         <a href="{{ .Permalink }}" class="recent-thumb">
-          <img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy" />
+          <img src="{{ $tImg | absURL }}" alt="{{ .Title }}" loading="lazy" />
         </a>
         {{ end }}
       </li>

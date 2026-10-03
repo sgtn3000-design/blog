@@ -1,7 +1,20 @@
-{{- define "hero" }}
+{{- $coverImg := "" }}
 {{- if .Params.cover.image }}
+  {{- $coverImg = .Params.cover.image }}
+{{- else if .Params.image }}
+  {{- $coverImg = .Params.image }}
+{{- end }}
+
+{{- define "hero" }}
+{{- $coverImg := "" }}
+{{- if .Params.cover.image }}
+  {{- $coverImg = .Params.cover.image }}
+{{- else if .Params.image }}
+  {{- $coverImg = .Params.image }}
+{{- end }}
+{{- if $coverImg }}
 <div class="hero-cover-container">
-  <div class="hero-cover-bg" style="background-image: url('{{ .Params.cover.image | absURL }}');"></div>
+  <div class="hero-cover-bg" style="background-image: url('{{ $coverImg | absURL }}');"></div>
   <div class="hero-cover-overlay"></div>
   <div class="hero-cover-content">
     {{- if .Params.categories }}
@@ -23,8 +36,14 @@
 {{- end }}
 
 {{- define "main" }}
-<article class="post-single {{ if not .Params.cover.image }}no-cover{{ end }}">
-  {{- if not .Params.cover.image }}
+{{- $coverImg := "" }}
+{{- if .Params.cover.image }}
+  {{- $coverImg = .Params.cover.image }}
+{{- else if .Params.image }}
+  {{- $coverImg = .Params.image }}
+{{- end }}
+<article class="post-single {{ if not $coverImg }}no-cover{{ end }}">
+  {{- if not $coverImg }}
   <header class="post-header">
     <h1 class="post-title">{{ .Title }}</h1>
     <div class="post-meta">{{ .Date.Format "2006-01-02" }}</div>

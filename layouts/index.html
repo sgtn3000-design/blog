@@ -1,3 +1,6 @@
+{{- define "hero" }}
+{{- end }}
+
 {{- define "main" }}
 <div class="list-header">
   <h2 class="list-title">전체 글 <span class="list-count">{{ len (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}</span></h2>
@@ -6,12 +9,18 @@
 <div class="post-grid-container">
   {{- $pages := first 6 (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
   {{- range $pages }}
-  <article class="grid-card card-clickable" data-href="{{ .Permalink }}">
+  {{- $postImg := "" }}
+  {{- if .Params.cover.image }}
+    {{- $postImg = .Params.cover.image }}
+  {{- else if .Params.image }}
+    {{- $postImg = .Params.image }}
+  {{- end }}
+  <article class="grid-card {{ if not $postImg }}card-without-image{{ end }}">
     <a href="{{ .Permalink }}" class="card-thumb-link">
-      {{- if .Params.cover.image }}
-      <img src="{{ .Params.cover.image | absURL }}" alt="{{ .Title }}" loading="lazy" class="card-thumb" />
+      {{- if $postImg }}
+      <img src="{{ $postImg | absURL }}" alt="{{ .Title }}" loading="lazy" class="card-thumb" />
       {{- else }}
-      <div class="card-thumb-placeholder" data-default="/images/category-default.webp"><img src="/images/category-default.webp" alt="기본 이미지" class="card-thumb" loading="lazy"></div>
+      <div class="card-thumb-empty-box"></div>
       {{- end }}
     </a>
     <div class="card-body">
@@ -26,17 +35,4 @@
   </article>
   {{- end }}
 </div>
-
-<script>
-// 카드 전체(썸네일+제목+요약+메타) 클릭 시 글로 이동
-document.querySelectorAll('.card-clickable').forEach(function(card){
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function(e){
-    // 카드 내부의 실제 링크 클릭은 그대로 두고, 그 외 영역 클릭 시 이동
-    if (e.target.closest('a')) return;
-    var href = card.getAttribute('data-href');
-    if (href) window.location.href = href;
-  });
-});
-</script>
 {{- end }}
