@@ -43,6 +43,12 @@
     </header>
     {{- end }}
 
+    {{/* 1. 본문 내용 출력 */}}
+    <div class="post-content">
+      {{- .Content }}
+    </div>
+
+    {{/* 2. 글 맨 밑 하단으로 이동한 수정하기 버튼 */}}
     {{- if .File }}
     <div class="post-edit-bar">
       <a href="https://github.com/sgtn3000-design/blog/edit/main/content/{{ .File.Path }}" target="_blank" rel="noopener noreferrer" class="edit-post-btn">
@@ -51,9 +57,5 @@
       </a>
     </div>
     {{- end }}
-
-    <div class="post-content">
-      {{- .Content }}
-    </div>
   </article>
 {{- end }}

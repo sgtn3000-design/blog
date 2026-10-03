@@ -1174,3 +1174,14 @@ body:has(.hero-cover-container) .post-edit-bar {
   text-decoration: none !important;
   color: inherit !important;
 }
+
+/* 본문 하단 수정하기 버튼 스타일 보정 */
+.post-edit-bar {
+  display: flex !important;
+  justify-content: flex-end !important;
+  margin: 3rem 0 2rem 0 !important;
+  padding-top: 1.2rem !important;
+  padding-bottom: 0 !important;
+  border-top: 1px solid var(--border) !important;
+  border-bottom: none !important;
+}
