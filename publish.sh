@@ -8,6 +8,10 @@ fi
 TITLE="$1"
 CONTENT="$2"
 CATEGORY="${3:-일반}"
+# SAFE_CATEGORY: 안전장치 — 빈값/"--"/"-" 등은 카테고리 오염이므로 강제 치환
+if [[ -z "$CATEGORY" || "$CATEGORY" == "--" || "$CATEGORY" == "-" || "$CATEGORY" == "—-" || "$CATEGORY" == "—" ]]; then
+    CATEGORY="일반"
+fi
 TAGS="${4:-Note}"
 INPUT_IMAGE="$5"
 DATE=$(date +"%Y-%m-%dT%H:%M:%S+09:00")
